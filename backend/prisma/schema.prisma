@@ -1,0 +1,159 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id              String         @id @default(uuid())
+  username        String         @unique
+  email           String         @unique
+  passwordHash    String
+  firstName       String
+  lastName        String
+  roles           String
+  managerId       String?
+  manager         User?          @relation("UserToManager", fields: [managerId], references: [id])
+  directReports   User[]         @relation("UserToManager")
+  isActive        Boolean        @default(true)
+  entraIdSyncId   String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  goalSheets      GoalSheet[]    @relation("GoalSheetOwner")
+  approvedSheets  GoalSheet[]    @relation("GoalSheetApprover")
+  checkInsConducted CheckIn[]    @relation("CheckInConductor")
+  checkInsEmployee  CheckIn[]    @relation("CheckInEmployee")
+  notifications   Notification[]
+}
+
+model GoalSheet {
+  id              String          @id @default(uuid())
+  employeeId      String
+  employee        User            @relation("GoalSheetOwner", fields: [employeeId], references: [id])
+  cycleId         String
+  cycle           PerformanceCycle @relation(fields: [cycleId], references: [id])
+  status          String          @default("DRAFT")
+  lockDate        DateTime?
+  submittedAt     DateTime?
+  approvedAt      DateTime?
+  approvedById    String?
+  approvedBy      User?           @relation("GoalSheetApprover", fields: [approvedById], references: [id])
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  goals           Goal[]
+  checkIns        CheckIn[]
+  auditLogs       AuditLog[]
+}
+
+model Goal {
+  id              String            @id @default(uuid())
+  goalSheetId     String
+  goalSheet       GoalSheet         @relation(fields: [goalSheetId], references: [id])
+  thrustArea      String
+  title           String
+  description     String
+  uom             String
+  target          String
+  optimizationDirection String? // "higher_better" or "lower_better"
+  weightage       Float
+  isShared        Boolean           @default(false)
+  sharedGoalId    String?
+  sharedGoal      SharedGoal?       @relation(fields: [sharedGoalId], references: [id])
+  isPrimaryOwner  Boolean           @default(false)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  achievements    Achievement[]
+}
+
+model SharedGoal {
+  id              String            @id @default(uuid())
+  title           String
+  description     String
+  thrustArea      String
+  uom             String
+  target          String
+  optimizationDirection String? // "higher_better" or "lower_better"
+  primaryOwnerId  String
+  createdBy       String
+  createdAt       DateTime          @default(now())
+  
+  linkedGoals     Goal[]
+}
+
+model Achievement {
+  id              String            @id @default(uuid())
+  goalId          String
+  goal            Goal              @relation(fields: [goalId], references: [id])
+  quarter         String
+  actual          String
+  status          String            @default("NOT_STARTED")
+  progressScore   Float
+  updatedAt       DateTime          @default(now())
+}
+
+model CheckIn {
+  id              String            @id @default(uuid())
+  managerId       String
+  manager         User              @relation("CheckInConductor", fields: [managerId], references: [id])
+  employeeId      String
+  employee        User              @relation("CheckInEmployee", fields: [employeeId], references: [id])
+  goalSheetId     String
+  goalSheet       GoalSheet         @relation(fields: [goalSheetId], references: [id])
+  quarter         String
+  feedback        String
+  isCompleted     Boolean           @default(false)
+  completedAt     DateTime?
+  createdAt       DateTime          @default(now())
+}
+
+model PerformanceCycle {
+  id              String            @id @default(uuid())
+  name            String
+  year            Int
+  isActive        Boolean           @default(false)
+  phases          String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  goalSheets      GoalSheet[]
+}
+
+model AuditLog {
+  id              String            @id @default(uuid())
+  goalSheetId     String
+  goalSheet       GoalSheet         @relation(fields: [goalSheetId], references: [id])
+  userId          String
+  action          String
+  field           String
+  oldValue        String
+  newValue        String
+  justification   String?
+  timestamp       DateTime          @default(now())
+}
+
+model Notification {
+  id              String            @id @default(uuid())
+  userId          String
+  user            User              @relation(fields: [userId], references: [id])
+  type            String
+  title           String
+  message         String
+  relatedEntityId String?
+  isRead          Boolean           @default(false)
+  createdAt       DateTime          @default(now())
+}
+
+model ThrustArea {
+  id              String            @id @default(uuid())
+  name            String            @unique
+  description     String?
+  isActive        Boolean           @default(true)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
