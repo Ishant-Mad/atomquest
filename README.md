@@ -7,6 +7,10 @@
 # Live Link
 **https://atomquest-brown.vercel.app/**
 
+# Demo Screenshot
+<img width="1920" height="995" alt="image" src="https://github.com/user-attachments/assets/132da2af-1554-4ed2-b779-a4886558247b" />
+
+
 ## 📋 Table of Contents
 - [Overview](#overview)
 - [Architecture](#-architecture)
@@ -35,41 +39,8 @@ AtomQuest modernizes how organizations define, track, and evaluate employee obje
 
 ## 🏗 Architecture
 
-```
-┌──────────────────────────────────────────────────────┐
-│                   CLIENT (Browser)                    │
-│  Next.js 16 + React 19 + Tailwind CSS + Recharts     │
-│  ┌────────────┐  ┌───────────┐  ┌──────────────────┐ │
-│  │  Sidebar   │  │  Topbar   │  │   Page Router    │ │
-│  │ Navigation │  │ Role/Phase│  │  (18 routes)     │ │
-│  └────────────┘  └───────────┘  └──────────────────┘ │
-└──────────────────────┬───────────────────────────────┘
-                       │ REST API (HTTP/JSON)
-                       ▼
-┌──────────────────────────────────────────────────────┐
-│                  API SERVER                           │
-│  Express.js 5 + TypeScript                            │
-│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌───────────┐  │
-│  │ Auth    │ │  Goals  │ │  Admin  │ │  Reports  │  │
-│  │ Routes  │ │ Routes  │ │ Routes  │ │  Routes   │  │
-│  └─────────┘ └─────────┘ └─────────┘ └───────────┘  │
-│  ┌─────────┐ ┌──────────┐ ┌──────────────────────┐  │
-│  │ CheckIn │ │ Shared   │ │ Analytics+Escalation │  │
-│  │ Routes  │ │ Goals    │ │ Routes               │  │
-│  └─────────┘ └──────────┘ └──────────────────────┘  │
-└──────────────────────┬───────────────────────────────┘
-                       │ Prisma ORM
-                       ▼
-┌──────────────────────────────────────────────────────┐
-│              DATABASE                                 │
-│  SQLite (dev) / PostgreSQL (prod)                     │
-│  ┌─────┐ ┌──────────┐ ┌──────┐ ┌────────────┐       │
-│  │User │ │GoalSheet │ │Goal  │ │Achievement │       │
-│  ├─────┤ ├──────────┤ ├──────┤ ├────────────┤       │
-│  │CheckIn│ │AuditLog │ │Notif │ │ThrustArea  │       │
-│  └─────┘ └──────────┘ └──────┘ └────────────┘       │
-└──────────────────────────────────────────────────────┘
-```
+<img width="6572" height="4816" alt="image" src="https://github.com/user-attachments/assets/603abe2c-9852-4848-8d00-c19266b6c581" />
+
 
 ### Data Flow
 1. **Employee** creates goal sheet → saved as `DRAFT`
@@ -92,7 +63,7 @@ AtomQuest modernizes how organizations define, track, and evaluate employee obje
 | 3 | Total weightage must equal 100% | §2.1 | ✅ |
 | 4 | Minimum 10% weightage per goal | §2.1 | ✅ |
 | 5 | 4 UoM types: Numeric, Percentage, Timeline, Zero-Based | §2.1 | ✅ |
-| 6 | Optimization direction (higher/lower is better) | §2.1 | ✅ |
+| 6 | Optimisation direction (higher/lower is better) | §2.1 | ✅ |
 | 7 | Thrust Area alignment per goal | §2.1 | ✅ |
 | 8 | Manager approval workflow | §2.1 | ✅ |
 | 9 | Manager can edit targets/weightages before approval | §2.1 | ✅ |
