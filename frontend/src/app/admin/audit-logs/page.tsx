@@ -67,90 +67,90 @@ export default function AdminAuditLogsPage() {
   }
 
   return (
-    <div className="flex flex-col flex-1 bg-slate-50/50">
+    <div className="flex flex-col flex-1 bg-background">
       <div className="flex-1 overflow-auto p-8">
         <div className="max-w-6xl mx-auto">
 
           <div className="mb-8">
-            <Link href="/admin" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm hover:bg-slate-50 mb-6">
+            <Link href="/admin" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground bg-card border border-border px-3 py-1.5 rounded-full shadow-sm hover:bg-background mb-6">
               <ChevronLeft className="h-4 w-4 mr-1" /> Admin Dashboard
             </Link>
             <div className="flex items-end justify-between">
               <div>
-                <h1 className="text-2xl font-bold text-slate-900 mb-1">Audit Logs</h1>
-                <p className="text-sm text-slate-500">Immutable record of all post-approval changes to goal sheets.</p>
+                <h1 className="text-2xl font-bold text-foreground mb-1">Audit Logs</h1>
+                <p className="text-sm text-muted-foreground">Immutable record of all post-approval changes to goal sheets.</p>
               </div>
-              <Button onClick={handleExportCSV} variant="outline" className="border-slate-200">
+              <Button onClick={handleExportCSV} variant="outline" className="border-border">
                 <Download className="h-4 w-4 mr-2" /> Export CSV
               </Button>
             </div>
           </div>
 
           {/* Filters */}
-          <Card className="border-slate-200 shadow-sm rounded-xl bg-white mb-6">
+          <Card className="border-border shadow-sm rounded-xl bg-card mb-6">
             <CardContent className="p-4 flex flex-wrap gap-4 items-end">
               <div className="space-y-1.5 flex-1 min-w-[150px]">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Field</label>
-                <input className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none"
+                <label className="text-xs font-bold text-foreground uppercase tracking-wider">Field</label>
+                <input className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm shadow-sm focus:outline-none"
                   placeholder="e.g., status" value={filters.field} onChange={e => setFilters(p => ({ ...p, field: e.target.value }))} />
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">From</label>
-                <input type="date" className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none"
+                <label className="text-xs font-bold text-foreground uppercase tracking-wider">From</label>
+                <input type="date" className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm shadow-sm focus:outline-none"
                   value={filters.from} onChange={e => setFilters(p => ({ ...p, from: e.target.value }))} />
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">To</label>
-                <input type="date" className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none"
+                <label className="text-xs font-bold text-foreground uppercase tracking-wider">To</label>
+                <input type="date" className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm shadow-sm focus:outline-none"
                   value={filters.to} onChange={e => setFilters(p => ({ ...p, to: e.target.value }))} />
               </div>
-              <Button onClick={fetchLogs} variant="outline" className="border-slate-200">
+              <Button onClick={fetchLogs} variant="outline" className="border-border">
                 <Filter className="h-4 w-4 mr-2" /> Apply
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="border-slate-200 shadow-sm rounded-xl overflow-hidden bg-white">
+          <Card className="border-border shadow-sm rounded-xl overflow-hidden bg-card">
             <CardContent className="p-0">
               {isLoading ? (
                 <div className="flex items-center justify-center h-48">
-                  <div className="h-6 w-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                  <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : logs.length === 0 ? (
                 <div className="p-12 text-center">
-                  <FileText className="h-10 w-10 text-slate-300 mx-auto mb-3" />
-                  <p className="text-slate-500 font-medium">No audit log entries found.</p>
-                  <p className="text-xs text-slate-400 mt-1">Changes made after goal approval will appear here.</p>
+                  <FileText className="h-10 w-10 text-muted-foreground/40 mx-auto mb-3" />
+                  <p className="text-muted-foreground font-medium">No audit log entries found.</p>
+                  <p className="text-xs text-muted-foreground mt-1">Changes made after goal approval will appear here.</p>
                 </div>
               ) : (
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-border">
                   {logs.map(log => (
-                    <div key={log.id} className="p-5 grid grid-cols-12 gap-4 items-start hover:bg-slate-50/70 transition-colors">
+                    <div key={log.id} className="p-5 grid grid-cols-12 gap-4 items-start hover:bg-background/70 transition-colors">
                       <div className="col-span-12 md:col-span-3">
-                        <p className="text-xs font-mono text-slate-500">{new Date(log.timestamp).toLocaleString()}</p>
-                        <p className="text-sm font-semibold text-slate-800 mt-1">
+                        <p className="text-xs font-mono text-muted-foreground">{new Date(log.timestamp).toLocaleString()}</p>
+                        <p className="text-sm font-semibold text-foreground mt-1">
                           {log.goalSheet?.employee?.firstName} {log.goalSheet?.employee?.lastName}
                         </p>
                       </div>
                       <div className="col-span-12 md:col-span-2">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold ${actionColors[log.action] || 'bg-slate-100 text-slate-600'}`}>
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold ${actionColors[log.action] || 'bg-secondary text-muted-foreground'}`}>
                           {log.action.replace(/_/g, ' ')}
                         </span>
-                        <p className="text-xs text-slate-400 mt-1 font-mono">{log.field}</p>
+                        <p className="text-xs text-muted-foreground mt-1 font-mono">{log.field}</p>
                       </div>
                       <div className="col-span-12 md:col-span-3 space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-bold text-slate-400 uppercase w-16">Before</span>
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase w-16">Before</span>
                           <span className="text-xs bg-red-50 text-red-700 px-1.5 py-0.5 rounded font-mono">{log.oldValue}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-bold text-slate-400 uppercase w-16">After</span>
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase w-16">After</span>
                           <span className="text-xs bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded font-mono">{log.newValue}</span>
                         </div>
                       </div>
                       <div className="col-span-12 md:col-span-4">
                         {log.justification && (
-                          <p className="text-xs text-slate-600 bg-amber-50 border border-amber-100 px-3 py-2 rounded-md italic">
+                          <p className="text-xs text-muted-foreground bg-amber-50 border border-amber-100 px-3 py-2 rounded-md italic">
                             "{log.justification}"
                           </p>
                         )}

@@ -92,27 +92,27 @@ export default function AdminUsersPage() {
 
   const roleColors: Record<string, string> = {
     ADMIN: "bg-violet-100 text-violet-700",
-    MANAGER: "bg-indigo-100 text-indigo-700",
-    EMPLOYEE: "bg-slate-100 text-slate-600",
+    MANAGER: "bg-primary/10 text-primary",
+    EMPLOYEE: "bg-secondary text-muted-foreground",
   }
 
   if (!isAuthenticated || role !== "ADMIN") return null
 
   return (
-    <div className="flex flex-col flex-1 bg-slate-50/50">
+    <div className="flex flex-col flex-1 bg-background">
       <div className="flex-1 overflow-auto p-8">
         <div className="max-w-6xl mx-auto">
 
           <div className="mb-8">
-            <Link href="/admin" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm hover:bg-slate-50 mb-6">
+            <Link href="/admin" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground bg-card border border-border px-3 py-1.5 rounded-full shadow-sm hover:bg-background mb-6">
               <ChevronLeft className="h-4 w-4 mr-1" /> Admin Dashboard
             </Link>
             <div className="flex items-end justify-between">
               <div>
-                <h1 className="text-2xl font-bold text-slate-900 mb-1">Org Hierarchy</h1>
-                <p className="text-sm text-slate-500">Manage employees, roles, and reporting relationships.</p>
+                <h1 className="text-2xl font-bold text-foreground mb-1">Org Hierarchy</h1>
+                <p className="text-sm text-muted-foreground">Manage employees, roles, and reporting relationships.</p>
               </div>
-              <Button onClick={() => setShowAdd(!showAdd)} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+              <Button onClick={() => setShowAdd(!showAdd)} className="bg-primary hover:bg-primary/90 text-white">
                 <Plus className="h-4 w-4 mr-2" /> Add User
               </Button>
             </div>
@@ -120,9 +120,9 @@ export default function AdminUsersPage() {
 
           {/* Add Form */}
           {showAdd && (
-            <Card className="border-indigo-200 shadow-sm rounded-xl bg-white mb-6">
-              <CardHeader className="border-b border-slate-100 px-6 py-4">
-                <CardTitle className="text-base font-semibold text-slate-800">Add New User</CardTitle>
+            <Card className="border-primary/20 shadow-sm rounded-xl bg-card mb-6">
+              <CardHeader className="border-b border-border px-6 py-4">
+                <CardTitle className="text-base font-semibold text-foreground">Add New User</CardTitle>
               </CardHeader>
               <CardContent className="p-6 grid grid-cols-2 md:grid-cols-3 gap-4">
                 {[
@@ -132,9 +132,9 @@ export default function AdminUsersPage() {
                   { key: "email", label: "Email", placeholder: "john@company.com" },
                 ].map(f => (
                   <div key={f.key} className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">{f.label}</label>
+                    <label className="text-xs font-bold text-foreground uppercase tracking-wider">{f.label}</label>
                     <input
-                      className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                      className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                       placeholder={f.placeholder}
                       value={(newUser as any)[f.key]}
                       onChange={e => setNewUser(prev => ({ ...prev, [f.key]: e.target.value }))}
@@ -142,8 +142,8 @@ export default function AdminUsersPage() {
                   </div>
                 ))}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Role</label>
-                  <select className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none"
+                  <label className="text-xs font-bold text-foreground uppercase tracking-wider">Role</label>
+                  <select className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm shadow-sm focus:outline-none"
                     value={newUser.roles} onChange={e => setNewUser(prev => ({ ...prev, roles: e.target.value }))}>
                     <option value="EMPLOYEE">Employee</option>
                     <option value="MANAGER">Manager</option>
@@ -151,8 +151,8 @@ export default function AdminUsersPage() {
                   </select>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Reports To</label>
-                  <select className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none"
+                  <label className="text-xs font-bold text-foreground uppercase tracking-wider">Reports To</label>
+                  <select className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm shadow-sm focus:outline-none"
                     value={newUser.managerId} onChange={e => setNewUser(prev => ({ ...prev, managerId: e.target.value }))}>
                     <option value="">No Manager</option>
                     {managers.map(m => (
@@ -160,8 +160,8 @@ export default function AdminUsersPage() {
                     ))}
                   </select>
                 </div>
-                <div className="md:col-span-3 flex gap-2 justify-end pt-2 border-t border-slate-100">
-                  <Button onClick={handleAdd} className="bg-indigo-600 hover:bg-indigo-700 text-white">Create User</Button>
+                <div className="md:col-span-3 flex gap-2 justify-end pt-2 border-t border-border">
+                  <Button onClick={handleAdd} className="bg-primary hover:bg-primary/90 text-white">Create User</Button>
                   <Button variant="ghost" onClick={() => setShowAdd(false)}>Cancel</Button>
                 </div>
               </CardContent>
@@ -169,33 +169,33 @@ export default function AdminUsersPage() {
           )}
 
           {/* Users Table */}
-          <Card className="border-slate-200 shadow-sm rounded-xl overflow-hidden bg-white">
+          <Card className="border-border shadow-sm rounded-xl overflow-hidden bg-card">
             <CardContent className="p-0">
               {isLoading ? (
                 <div className="flex items-center justify-center h-48">
-                  <div className="h-6 w-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                  <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : (
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-border">
                   {users.map(u => (
                     <div key={u.id} className={`p-4 flex items-center gap-4 ${!u.isActive ? 'opacity-50' : ''}`}>
-                      <div className="h-9 w-9 rounded-full bg-indigo-100 flex items-center justify-center font-bold text-indigo-700 text-xs shrink-0">
+                      <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs shrink-0">
                         {(u.firstName?.[0] || '') + (u.lastName?.[0] || '')}
                       </div>
 
                       {editId === u.id ? (
                         <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-3">
-                          <input className="rounded-md border border-slate-200 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          <input className="rounded-md border border-border px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                             value={editData.firstName || ''} onChange={e => setEditData((p: any) => ({ ...p, firstName: e.target.value }))} placeholder="First Name" />
-                          <input className="rounded-md border border-slate-200 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          <input className="rounded-md border border-border px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                             value={editData.lastName || ''} onChange={e => setEditData((p: any) => ({ ...p, lastName: e.target.value }))} placeholder="Last Name" />
-                          <select className="rounded-md border border-slate-200 px-3 py-1.5 text-sm focus:outline-none"
+                          <select className="rounded-md border border-border px-3 py-1.5 text-sm focus:outline-none"
                             value={editData.roles || ''} onChange={e => setEditData((p: any) => ({ ...p, roles: e.target.value }))}>
                             <option value="EMPLOYEE">Employee</option>
                             <option value="MANAGER">Manager</option>
                             <option value="ADMIN">Admin</option>
                           </select>
-                          <select className="rounded-md border border-slate-200 px-3 py-1.5 text-sm focus:outline-none"
+                          <select className="rounded-md border border-border px-3 py-1.5 text-sm focus:outline-none"
                             value={editData.managerId || ''} onChange={e => setEditData((p: any) => ({ ...p, managerId: e.target.value || null }))}>
                             <option value="">No Manager</option>
                             {managers.filter(m => m.id !== u.id).map(m => (
@@ -213,14 +213,14 @@ export default function AdminUsersPage() {
                         <>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                              <p className="text-sm font-semibold text-slate-800">{u.firstName} {u.lastName}</p>
+                              <p className="text-sm font-semibold text-foreground">{u.firstName} {u.lastName}</p>
                               <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${roleColors[u.roles]}`}>{u.roles}</span>
-                              {!u.isActive && <span className="text-[10px] font-bold text-slate-400 uppercase">Inactive</span>}
+                              {!u.isActive && <span className="text-[10px] font-bold text-muted-foreground uppercase">Inactive</span>}
                             </div>
-                            <p className="text-xs text-slate-500 mt-0.5">{u.email} · Reports to: {u.manager ? `${u.manager.firstName} ${u.manager.lastName}` : 'No one'}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">{u.email} · Reports to: {u.manager ? `${u.manager.firstName} ${u.manager.lastName}` : 'No one'}</p>
                           </div>
                           <div className="text-right shrink-0">
-                            <p className="text-xs text-slate-400">{u._count?.directReports || 0} reports · {u._count?.goalSheets || 0} sheets</p>
+                            <p className="text-xs text-muted-foreground">{u._count?.directReports || 0} reports · {u._count?.goalSheets || 0} sheets</p>
                           </div>
                         </>
                       )}
@@ -228,12 +228,12 @@ export default function AdminUsersPage() {
                       {editId !== u.id && (
                         <div className="flex gap-1 shrink-0">
                           <button onClick={() => { setEditId(u.id); setEditData({ firstName: u.firstName, lastName: u.lastName, roles: u.roles, managerId: u.managerId || '' }) }}
-                            className="p-1.5 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors">
+                            className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
                             <Edit2 className="h-3.5 w-3.5" />
                           </button>
                           {u.isActive && u.id !== user?.id && (
                             <button onClick={() => handleDeactivate(u.id)}
-                              className="p-1.5 rounded hover:bg-red-50 text-slate-400 hover:text-red-600 transition-colors">
+                              className="p-1.5 rounded hover:bg-red-50 text-muted-foreground hover:text-red-600 transition-colors">
                               <Trash2 className="h-3.5 w-3.5" />
                             </button>
                           )}

@@ -16,7 +16,7 @@ import {
 } from "lucide-react"
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: any }> = {
-  DRAFT:            { label: 'Draft',            color: 'text-slate-600',  bg: 'bg-slate-100',  icon: FileText },
+  DRAFT:            { label: 'Draft',            color: 'text-muted-foreground',  bg: 'bg-secondary',  icon: FileText },
   PENDING_APPROVAL: { label: 'Pending Approval', color: 'text-amber-700',  bg: 'bg-amber-50',   icon: Clock },
   APPROVED:         { label: 'Approved',          color: 'text-emerald-700',bg: 'bg-emerald-50', icon: CheckCircle2 },
   RETURNED:         { label: 'Returned for Rework',color:'text-red-700',   bg: 'bg-red-50',     icon: AlertCircle },
@@ -67,18 +67,18 @@ export default function MyGoalsPage() {
   if (!isAuthenticated) return null
 
   return (
-    <div className="flex flex-col flex-1 bg-slate-50/50">
+    <div className="flex flex-col flex-1 bg-background">
       <div className="flex-1 overflow-auto p-8">
         <div className="max-w-5xl mx-auto">
           
           {/* Header */}
           <div className="flex items-end justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 mb-1">My Goals</h1>
-              <p className="text-sm text-slate-500">Manage and track your performance objectives for FY 2026.</p>
+              <h1 className="text-2xl font-bold text-foreground mb-1">My Goals</h1>
+              <p className="text-sm text-muted-foreground">Manage and track your performance objectives for FY 2026.</p>
             </div>
             <Link href="/goals/create">
-              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm">
+              <Button className="bg-primary hover:bg-primary/90 text-white shadow-sm">
                 <PlusCircle className="h-4 w-4 mr-2" /> New Goal Sheet
               </Button>
             </Link>
@@ -86,20 +86,20 @@ export default function MyGoalsPage() {
 
           {isLoading ? (
             <div className="flex flex-col items-center justify-center h-64 gap-4">
-              <div className="h-6 w-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-              <p className="text-sm text-slate-500">Loading your goal sheets...</p>
+              <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              <p className="text-sm text-muted-foreground">Loading your goal sheets...</p>
             </div>
           ) : sheets.length === 0 ? (
-            <Card className="border-slate-200 shadow-sm rounded-xl p-16 text-center bg-white">
-              <div className="h-16 w-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Target className="h-8 w-8 text-indigo-500" />
+            <Card className="border-border shadow-sm rounded-xl p-16 text-center bg-card">
+              <div className="h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Target className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">No Goal Sheets Yet</h3>
-              <p className="text-slate-500 text-sm mb-6 max-w-sm mx-auto">
+              <h3 className="text-xl font-bold text-foreground mb-2">No Goal Sheets Yet</h3>
+              <p className="text-muted-foreground text-sm mb-6 max-w-sm mx-auto">
                 Create your first goal sheet to start defining your objectives for this performance cycle.
               </p>
               <Link href="/goals/create">
-                <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                <Button className="bg-primary hover:bg-primary/90 text-white">
                   <PlusCircle className="h-4 w-4 mr-2" /> Create Goal Sheet
                 </Button>
               </Link>
@@ -118,17 +118,17 @@ export default function MyGoalsPage() {
                 }, 0) || 0
 
                 return (
-                  <Card key={sheet.id} className="border-slate-200 shadow-sm rounded-xl overflow-hidden bg-white">
+                  <Card key={sheet.id} className="border-border shadow-sm rounded-xl overflow-hidden bg-card">
                     {/* Sheet Header */}
-                    <CardHeader className="bg-slate-50 border-b border-slate-100 px-6 py-4">
+                    <CardHeader className="bg-background border-b border-border px-6 py-4">
                       <div className="flex items-center justify-between flex-wrap gap-4">
                         <div className="flex items-center gap-4">
-                          <div className="h-10 w-10 rounded-lg bg-indigo-100 flex items-center justify-center">
-                            <Layers className="h-5 w-5 text-indigo-600" />
+                          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Layers className="h-5 w-5 text-primary" />
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <CardTitle className="text-base font-bold text-slate-800">
+                              <CardTitle className="text-base font-bold text-foreground">
                                 {sheet.cycle?.name || 'FY 2026'} Goal Sheet
                               </CardTitle>
                               <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${cfg.bg} ${cfg.color}`}>
@@ -147,7 +147,7 @@ export default function MyGoalsPage() {
                         <div className="flex gap-2">
                           {sheet.status === 'APPROVED' && (
                             <Link href={`/goals/achievements?sheetId=${sheet.id}`}>
-                              <Button size="sm" variant="outline" className="border-slate-200 text-slate-700">
+                              <Button size="sm" variant="outline" className="border-border text-foreground">
                                 <BarChart2 className="h-3.5 w-3.5 mr-1.5" /> Update Achievements
                               </Button>
                             </Link>
@@ -155,13 +155,13 @@ export default function MyGoalsPage() {
                           {(sheet.status === 'DRAFT' || sheet.status === 'RETURNED') && (
                             <>
                               <Link href={`/goals/edit?sheetId=${sheet.id}`}>
-                                <Button size="sm" variant="outline" className="border-slate-200 text-slate-700">
+                                <Button size="sm" variant="outline" className="border-border text-foreground">
                                   <Edit2 className="h-3.5 w-3.5 mr-1.5" /> Edit
                                 </Button>
                               </Link>
                               <Button
                                 size="sm"
-                                className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                                className="bg-primary hover:bg-primary/90 text-white"
                                 onClick={() => handleSubmit(sheet.id)}
                                 disabled={submitting === sheet.id}
                               >
@@ -176,13 +176,13 @@ export default function MyGoalsPage() {
                       {/* Overall progress bar (only for approved sheets with data) */}
                       {sheet.status === 'APPROVED' && goalsWithAchievements.length > 0 && (
                         <div className="mt-4 flex items-center gap-3">
-                          <span className="text-xs font-semibold text-slate-500 w-28">Overall Progress</span>
+                          <span className="text-xs font-semibold text-muted-foreground w-28">Overall Progress</span>
                           <Progress
                             value={overallScore}
                             className="flex-1 h-2 bg-slate-200"
                             indicatorClassName={overallScore >= 80 ? "bg-emerald-500" : overallScore >= 50 ? "bg-amber-500" : "bg-red-500"}
                           />
-                          <span className="text-sm font-bold text-slate-800 w-12 text-right">{overallScore.toFixed(1)}%</span>
+                          <span className="text-sm font-bold text-foreground w-12 text-right">{overallScore.toFixed(1)}%</span>
                         </div>
                       )}
 
@@ -197,16 +197,16 @@ export default function MyGoalsPage() {
 
                     {/* Goals List */}
                     <CardContent className="p-0">
-                      <div className="divide-y divide-slate-100">
+                      <div className="divide-y divide-border">
                         {sheet.goals?.map((goal: any, idx: number) => {
                           const latest = goal.achievements?.[0]
                           const score = latest?.progressScore || 0
 
                           return (
-                            <div key={goal.id} className="p-5 grid grid-cols-12 gap-4 items-center hover:bg-slate-50/50 transition-colors">
+                            <div key={goal.id} className="p-5 grid grid-cols-12 gap-4 items-center hover:bg-background transition-colors">
                               {/* Index */}
                               <div className="col-span-1 hidden md:flex items-center justify-center">
-                                <div className="h-7 w-7 rounded bg-slate-100 text-slate-600 text-xs font-bold flex items-center justify-center">
+                                <div className="h-7 w-7 rounded bg-secondary text-muted-foreground text-xs font-bold flex items-center justify-center">
                                   {idx + 1}
                                 </div>
                               </div>
@@ -214,7 +214,7 @@ export default function MyGoalsPage() {
                               {/* Goal Info */}
                               <div className="col-span-12 md:col-span-7">
                                 <div className="flex items-center gap-2 flex-wrap">
-                                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
+                                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground bg-secondary px-2 py-0.5 rounded">
                                     {goal.thrustArea}
                                   </span>
                                   {goal.isShared && (
@@ -223,30 +223,30 @@ export default function MyGoalsPage() {
                                     </span>
                                   )}
                                 </div>
-                                <p className="text-sm font-semibold text-slate-800 mt-1">{goal.title}</p>
-                                <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{goal.description}</p>
+                                <p className="text-sm font-semibold text-foreground mt-1">{goal.title}</p>
+                                <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{goal.description}</p>
                               </div>
 
                               {/* Metrics */}
-                              <div className="col-span-12 md:col-span-4 flex items-center gap-4 md:border-l border-slate-100 md:pl-4">
+                              <div className="col-span-12 md:col-span-4 flex items-center gap-4 md:border-l border-border md:pl-4">
                                 <div>
-                                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Target</p>
-                                  <p className="text-sm font-semibold text-slate-800">{goal.target} <span className="text-xs font-normal text-slate-400">{goal.uom?.replace('_', ' ')}</span></p>
+                                  <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Target</p>
+                                  <p className="text-sm font-semibold text-foreground">{goal.target} <span className="text-xs font-normal text-muted-foreground">{goal.uom?.replace('_', ' ')}</span></p>
                                 </div>
                                 <div>
-                                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Weight</p>
-                                  <p className="text-lg font-black text-indigo-600">{goal.weightage}%</p>
+                                  <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Weight</p>
+                                  <p className="text-lg font-black text-primary">{goal.weightage}%</p>
                                 </div>
                                 {latest && (
                                   <div className="flex-1">
-                                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Progress</p>
+                                    <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Progress</p>
                                     <div className="flex items-center gap-2">
                                       <Progress
                                         value={score}
-                                        className="flex-1 h-1.5 bg-slate-100"
+                                        className="flex-1 h-1.5 bg-secondary"
                                         indicatorClassName={score >= 80 ? "bg-emerald-500" : score >= 50 ? "bg-amber-500" : "bg-red-500"}
                                       />
-                                      <span className="text-xs font-bold text-slate-700">{score.toFixed(0)}%</span>
+                                      <span className="text-xs font-bold text-foreground">{score.toFixed(0)}%</span>
                                     </div>
                                   </div>
                                 )}

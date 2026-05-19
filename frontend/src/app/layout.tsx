@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { RoleProvider } from '@/context/role-context'
@@ -11,11 +11,22 @@ import { MainLayoutWrapper } from '@/components/main-layout-wrapper'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from "@/components/ui/tooltip"
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+})
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-heading',
+  weight: ['500', '600', '700', '800'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'AtomQuest | Enterprise Goal Tracking',
-  description: 'Enterprise-grade gamified goal setting and tracking portal.',
+  description: 'Enterprise-grade goal setting and performance tracking portal.',
 }
 
 export default function RootLayout({
@@ -25,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} min-h-screen bg-gray-50/50 font-sans antialiased text-slate-900`} suppressHydrationWarning>
+      <body className={`${inter.variable} ${jakarta.variable} min-h-screen bg-background font-sans antialiased`} suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

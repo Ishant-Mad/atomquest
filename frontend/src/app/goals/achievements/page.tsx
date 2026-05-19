@@ -95,35 +95,35 @@ function AchievementsContent() {
   if (!isAuthenticated) return null
   if (isLoading) return (
     <div className="flex items-center justify-center h-full">
-      <div className="h-6 w-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+      <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
     </div>
   )
   if (!sheet) return (
-    <div className="p-8 text-center text-slate-500">Goal sheet not found.</div>
+    <div className="p-8 text-center text-muted-foreground">Goal sheet not found.</div>
   )
 
   return (
-    <div className="flex flex-col flex-1 bg-slate-50/50">
+    <div className="flex flex-col flex-1 bg-background">
       <div className="flex-1 overflow-auto p-8">
         <div className="max-w-4xl mx-auto">
 
           <div className="mb-8">
-            <Link href="/goals" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm hover:bg-slate-50 mb-6">
+            <Link href="/goals" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground bg-card border border-border px-3 py-1.5 rounded-full shadow-sm hover:bg-background mb-6">
               <ChevronLeft className="h-4 w-4 mr-1" /> Back to Goals
             </Link>
             <div className="flex items-end justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-slate-900 mb-1">Update Achievements</h1>
-                <p className="text-sm text-slate-500">Record your quarterly progress for each objective.</p>
+                <h1 className="text-2xl font-bold text-foreground mb-1">Update Achievements</h1>
+                <p className="text-sm text-muted-foreground">Record your quarterly progress for each objective.</p>
               </div>
 
               {/* Quarter Selector */}
-              <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg p-1 shadow-sm">
+              <div className="flex items-center gap-2 bg-card border border-border rounded-lg p-1 shadow-sm">
                 {QUARTER_OPTIONS.map(q => (
                   <button
                     key={q}
                     onClick={() => setQuarter(q)}
-                    className={`px-4 py-1.5 rounded-md text-sm font-semibold transition-all ${quarter === q ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
+                    className={`px-4 py-1.5 rounded-md text-sm font-semibold transition-all ${quarter === q ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                   >
                     {q}
                   </button>
@@ -153,33 +153,33 @@ function AchievementsContent() {
               }
 
               return (
-                <Card key={goal.id} className="border-slate-200 shadow-sm rounded-xl overflow-hidden bg-white">
-                  <CardHeader className="bg-slate-50 border-b border-slate-100 py-4 px-6 flex flex-row items-center justify-between">
+                <Card key={goal.id} className="border-border shadow-sm rounded-xl overflow-hidden bg-card">
+                  <CardHeader className="bg-background border-b border-border py-4 px-6 flex flex-row items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="h-6 w-6 rounded bg-indigo-100 text-indigo-700 text-xs font-bold flex items-center justify-center">
+                      <div className="h-6 w-6 rounded bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
                         {idx + 1}
                       </div>
                       <div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mr-2">{goal.thrustArea}</span>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mr-2">{goal.thrustArea}</span>
                         {goal.isShared && <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 border border-blue-100 px-1.5 py-0.5 rounded">Shared{!goal.isPrimaryOwner ? ' (Read-only)' : ''}</span>}
-                        <CardTitle className="text-sm font-semibold text-slate-800 mt-0.5">{goal.title}</CardTitle>
+                        <CardTitle className="text-sm font-semibold text-foreground mt-0.5">{goal.title}</CardTitle>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Target</p>
-                      <p className="text-sm font-semibold text-slate-700">{goal.target} <span className="text-xs text-slate-400">{goal.uom?.replace('_', ' ')}</span></p>
-                      <p className="text-[10px] text-slate-400 mt-0.5">Weight: {goal.weightage}%</p>
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Target</p>
+                      <p className="text-sm font-semibold text-foreground">{goal.target} <span className="text-xs text-muted-foreground">{goal.uom?.replace('_', ' ')}</span></p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">Weight: {goal.weightage}%</p>
                     </div>
                   </CardHeader>
                   <CardContent className="p-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Actual Achievement</label>
+                        <label className="text-xs font-bold text-foreground uppercase tracking-wider">Actual Achievement</label>
                         {goal.uom === 'TIMELINE' ? (
                           <input
                             type="date"
                             disabled={isReadOnly}
-                            className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                            className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
                             value={ach.actual}
                             onChange={e => setAchievements(prev => ({ ...prev, [goal.id]: { ...prev[goal.id], actual: e.target.value } }))}
                           />
@@ -188,17 +188,17 @@ function AchievementsContent() {
                             type={goal.uom === 'ZERO_BASED' ? 'number' : 'number'}
                             disabled={isReadOnly}
                             placeholder={goal.uom === 'PERCENTAGE' ? '0-100' : 'Enter value'}
-                            className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm font-mono disabled:opacity-60 disabled:cursor-not-allowed"
+                            className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm font-mono disabled:opacity-60 disabled:cursor-not-allowed"
                             value={ach.actual}
                             onChange={e => setAchievements(prev => ({ ...prev, [goal.id]: { ...prev[goal.id], actual: e.target.value } }))}
                           />
                         )}
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Status</label>
+                        <label className="text-xs font-bold text-foreground uppercase tracking-wider">Status</label>
                         <select
                           disabled={isReadOnly}
-                          className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                          className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
                           value={ach.status}
                           onChange={e => setAchievements(prev => ({ ...prev, [goal.id]: { ...prev[goal.id], status: e.target.value } }))}
                         >
@@ -211,8 +211,8 @@ function AchievementsContent() {
 
                     {/* Progress preview */}
                     {ach.actual && (
-                      <div className="mt-4 pt-4 border-t border-slate-100">
-                        <div className="flex items-center justify-between text-xs text-slate-500 mb-1.5">
+                      <div className="mt-4 pt-4 border-t border-border">
+                        <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
                           <span className="font-semibold">Progress Score Preview</span>
                           <span className={`font-bold text-sm ${scorePreview >= 80 ? 'text-emerald-600' : scorePreview >= 50 ? 'text-amber-600' : 'text-red-600'}`}>
                             {Math.min(scorePreview, 100).toFixed(1)}%
@@ -220,7 +220,7 @@ function AchievementsContent() {
                         </div>
                         <Progress
                           value={Math.min(scorePreview, 100)}
-                          className="h-1.5 bg-slate-100"
+                          className="h-1.5 bg-secondary"
                           indicatorClassName={scorePreview >= 80 ? "bg-emerald-500" : scorePreview >= 50 ? "bg-amber-500" : "bg-red-500"}
                         />
                       </div>
@@ -235,7 +235,7 @@ function AchievementsContent() {
             <Button
               onClick={handleSave}
               disabled={isSaving}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-8"
+              className="bg-primary hover:bg-primary/90 text-white px-8"
             >
               <Save className="h-4 w-4 mr-2" />
               {isSaving ? 'Saving...' : `Save ${quarter} Achievements`}
@@ -249,7 +249,7 @@ function AchievementsContent() {
 
 export default function AchievementsPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center h-full"><div className="h-6 w-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" /></div>}>
+    <Suspense fallback={<div className="flex items-center justify-center h-full"><div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>}>
       <AchievementsContent />
     </Suspense>
   )

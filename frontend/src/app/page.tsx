@@ -5,10 +5,9 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/auth-context"
 import { useRole, Role } from "@/context/role-context"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { toast } from "sonner"
 import { motion } from "framer-motion"
-import { Target } from "lucide-react"
+import { Target, User, Shield, Users } from "lucide-react"
 
 export default function LoginPage() {
   const [username, setUsername] = useState("")
@@ -82,77 +81,94 @@ export default function LoginPage() {
     }
   }
 
+  const demoPersonas = [
+    { role: "employee", label: "Employee", desc: "Priya Sharma", icon: User },
+    { role: "manager", label: "Manager", desc: "Ananya Kumar", icon: Users },
+    { role: "admin", label: "Admin", desc: "System Admin", icon: Shield },
+  ]
+
   return (
-    <div className="flex min-h-screen items-center justify-center p-4 bg-slate-50">
+    <div className="flex min-h-screen items-center justify-center p-4 bg-background">
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-[400px]"
+        transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+        className="w-full max-w-[420px]"
       >
-        <div className="flex justify-center mb-8">
+        {/* Logo */}
+        <div className="flex justify-center mb-10">
           <div className="flex items-center gap-3">
-            <div className="bg-primary/10 p-2.5 rounded-lg border border-primary/20">
-              <Target className="h-6 w-6 text-primary" />
+            <div className="bg-primary p-2.5 rounded-lg">
+              <Target className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-xl tracking-tight">AtomQuest</span>
+            <span className="font-heading font-bold text-xl tracking-tight text-foreground">AtomQuest</span>
           </div>
         </div>
-        
-        <Card className="border-border bg-card shadow-sm rounded-xl overflow-hidden">
+
+        {/* Sign in form */}
+        <div className="bg-card border border-border rounded-xl p-6">
           <form onSubmit={handleLogin}>
-            <CardHeader className="space-y-1.5 pb-6">
-              <CardTitle className="text-xl font-semibold tracking-tight text-foreground">Sign in to your account</CardTitle>
-              <CardDescription className="text-sm">
-                Enter your credentials to access your workspace.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="space-y-2">
-                <label className="text-sm font-medium leading-none text-foreground" htmlFor="username">
+            <div className="mb-6">
+              <h1 className="text-lg font-heading font-semibold text-foreground">Sign in to your account</h1>
+              <p className="text-sm text-muted-foreground mt-1">Enter your credentials to access your workspace.</p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-foreground" htmlFor="username">
                   Username
                 </label>
                 <input
                   id="username"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
+                  className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
                   placeholder="e.g. employee"
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  style={{ transitionDuration: 'var(--duration-fast)' }}
                 />
               </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium leading-none text-foreground" htmlFor="password">
-                    Password
-                  </label>
-                </div>
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-foreground" htmlFor="password">
+                  Password
+                </label>
                 <input
                   id="password"
                   type="password"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
+                  className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  style={{ transitionDuration: 'var(--duration-fast)' }}
                 />
               </div>
 
-              <div className="pt-4 border-t border-border mt-2">
-                <p className="text-xs text-muted-foreground mb-3 font-medium uppercase tracking-wider">Demo Quick Login</p>
-                <div className="grid grid-cols-3 gap-2">
-                  <Button type="button" variant="secondary" size="sm" className="h-8 text-xs font-medium" onClick={() => quickLogin("employee")}>Employee</Button>
-                  <Button type="button" variant="secondary" size="sm" className="h-8 text-xs font-medium" onClick={() => quickLogin("manager")}>Manager</Button>
-                  <Button type="button" variant="secondary" size="sm" className="h-8 text-xs font-medium" onClick={() => quickLogin("admin")}>Admin</Button>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="pt-2 pb-6">
-              <Button className="w-full font-medium" type="submit" disabled={isLoading}>
+              <Button className="w-full font-medium bg-primary text-primary-foreground hover:bg-primary/90" type="submit" disabled={isLoading}>
                 {isLoading ? "Signing in..." : "Sign in"}
               </Button>
-            </CardFooter>
+            </div>
           </form>
-        </Card>
+
+          {/* Demo quick login */}
+          <div className="mt-6 pt-5 border-t border-border">
+            <p className="text-xs text-muted-foreground mb-3 font-medium">Quick demo access</p>
+            <div className="grid grid-cols-3 gap-2">
+              {demoPersonas.map(p => (
+                <button
+                  key={p.role}
+                  type="button"
+                  onClick={() => quickLogin(p.role)}
+                  className="flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg border border-border bg-background hover:border-primary/30 hover:bg-accent/30 transition-colors text-center group"
+                  style={{ transitionDuration: 'var(--duration-normal)', transitionTimingFunction: 'var(--ease-out-quart)' }}
+                >
+                  <p.icon className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span className="text-xs font-semibold text-foreground">{p.label}</span>
+                  <span className="text-[10px] text-muted-foreground">{p.desc}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
       </motion.div>
     </div>
   )

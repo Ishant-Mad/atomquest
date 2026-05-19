@@ -105,24 +105,24 @@ export default function CreateGoalSheetPage() {
   }
 
   return (
-    <div className="flex flex-col bg-slate-50/50 min-h-full">
+    <div className="flex flex-col bg-background min-h-full">
       <div className="flex-1 overflow-auto p-8">
         <div className="max-w-4xl mx-auto">
           
           <div className="mb-8">
-            <Link href="/dashboard" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors mb-6 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm hover:bg-slate-50">
+            <Link href="/dashboard" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mb-6 bg-card border border-border px-3 py-1.5 rounded-full shadow-sm hover:bg-background">
               <ChevronLeft className="h-4 w-4 mr-1" /> Back to Dashboard
             </Link>
             
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
               <div>
-                <h1 className="text-2xl font-bold text-slate-900 mb-1">Draft Goal Sheet</h1>
-                <p className="text-sm text-slate-500">Define clear, measurable objectives for the upcoming cycle.</p>
+                <h1 className="text-2xl font-bold text-foreground mb-1">Draft Goal Sheet</h1>
+                <p className="text-sm text-muted-foreground">Define clear, measurable objectives for the upcoming cycle.</p>
               </div>
               
-              <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm min-w-[250px]">
+              <div className="bg-card border border-border p-4 rounded-xl shadow-sm min-w-[250px]">
                 <div className="flex justify-between items-end mb-2">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
                     <Scale className="h-3 w-3" /> Total Weightage
                   </span>
                   <span className={`text-xl font-black ${totalWeight === 100 ? 'text-emerald-600' : totalWeight > 100 ? 'text-red-500' : 'text-amber-500'}`}>
@@ -131,7 +131,7 @@ export default function CreateGoalSheetPage() {
                 </div>
                 <Progress 
                   value={totalWeight > 100 ? 100 : totalWeight} 
-                  className="h-1.5 bg-slate-100"
+                  className="h-1.5 bg-secondary"
                   indicatorClassName={totalWeight === 100 ? 'bg-emerald-500' : totalWeight > 100 ? 'bg-red-500' : 'bg-amber-500'} 
                 />
               </div>
@@ -140,20 +140,20 @@ export default function CreateGoalSheetPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {goals.map((goal, idx) => (
-              <Card key={idx} className="shadow-sm border-slate-200 rounded-xl overflow-hidden bg-white">
-                <CardHeader className="bg-slate-50 border-b border-slate-100 py-4 px-6 flex flex-row items-center justify-between">
+              <Card key={idx} className="shadow-sm border-border rounded-xl overflow-hidden bg-card">
+                <CardHeader className="bg-background border-b border-border py-4 px-6 flex flex-row items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="h-6 w-6 rounded flex items-center justify-center font-bold text-xs bg-indigo-100 text-indigo-700">
+                    <div className="h-6 w-6 rounded flex items-center justify-center font-bold text-xs bg-primary/10 text-primary">
                       {idx + 1}
                     </div>
-                    <CardTitle className="text-sm font-semibold text-slate-800">Objective Definition</CardTitle>
+                    <CardTitle className="text-sm font-semibold text-foreground">Objective Definition</CardTitle>
                   </div>
                   {goals.length > 1 && (
                     <Button 
                       type="button" 
                       variant="ghost" 
                       size="sm"
-                      className="text-slate-400 hover:text-red-600 hover:bg-red-50 h-8 px-2"
+                      className="text-muted-foreground hover:text-red-600 hover:bg-red-50 h-8 px-2"
                       onClick={() => handleRemoveGoal(idx)}
                     >
                       <Trash2 className="h-4 w-4 mr-1.5" /> Remove
@@ -163,10 +163,10 @@ export default function CreateGoalSheetPage() {
                 
                 <CardContent className="p-6 grid gap-6 md:grid-cols-12">
                   <div className="space-y-2 md:col-span-4">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Thrust Area</label>
+                    <label className="text-xs font-bold text-foreground uppercase tracking-wider">Thrust Area</label>
                     <select
                       required
-                      className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm"
+                      className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm"
                       value={goal.thrustArea}
                       onChange={(e) => handleChange(idx, "thrustArea", e.target.value)}
                     >
@@ -178,10 +178,10 @@ export default function CreateGoalSheetPage() {
                   </div>
                   
                   <div className="space-y-2 md:col-span-8">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Title</label>
+                    <label className="text-xs font-bold text-foreground uppercase tracking-wider">Title</label>
                     <input
                       required
-                      className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm"
+                      className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm"
                       placeholder="e.g., Increase user retention by 15% in Q3"
                       value={goal.title}
                       onChange={(e) => handleChange(idx, "title", e.target.value)}
@@ -189,10 +189,10 @@ export default function CreateGoalSheetPage() {
                   </div>
                   
                   <div className="space-y-2 md:col-span-12">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Description</label>
+                    <label className="text-xs font-bold text-foreground uppercase tracking-wider">Description</label>
                     <textarea
                       required
-                      className="w-full min-h-[80px] rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm resize-y"
+                      className="w-full min-h-[80px] rounded-md border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm resize-y"
                       placeholder="Provide detailed context, milestones, and how this will be measured..."
                       value={goal.description}
                       onChange={(e) => handleChange(idx, "description", e.target.value)}
@@ -200,9 +200,9 @@ export default function CreateGoalSheetPage() {
                   </div>
                   
                   <div className="space-y-2 md:col-span-4">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Metric Type</label>
+                    <label className="text-xs font-bold text-foreground uppercase tracking-wider">Metric Type</label>
                     <select
-                      className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm"
+                      className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm"
                       value={goal.uom}
                       onChange={(e) => handleChange(idx, "uom", e.target.value)}
                     >
@@ -211,10 +211,10 @@ export default function CreateGoalSheetPage() {
                   </div>
                   
                   <div className="space-y-2 md:col-span-5">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Target Value</label>
+                    <label className="text-xs font-bold text-foreground uppercase tracking-wider">Target Value</label>
                     <input
                       required
-                      className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm font-mono"
+                      className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm font-mono"
                       placeholder={goal.uom === 'PERCENTAGE' ? '100' : goal.uom === 'TIMELINE' ? 'YYYY-MM-DD' : 'Target value'}
                       value={goal.target}
                       onChange={(e) => handleChange(idx, "target", e.target.value)}
@@ -222,29 +222,29 @@ export default function CreateGoalSheetPage() {
                   </div>
                   
                   <div className="space-y-2 md:col-span-3">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Weightage (%)</label>
+                    <label className="text-xs font-bold text-foreground uppercase tracking-wider">Weightage (%)</label>
                     <div className="relative">
                       <input
                         required
                         type="number"
                         min="10"
                         max="100"
-                        className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm font-mono font-bold"
+                        className="w-full rounded-md border border-border bg-card px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm font-mono font-bold"
                         value={goal.weightage}
                         onChange={(e) => handleChange(idx, "weightage", e.target.value)}
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">%</span>
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-xs">%</span>
                     </div>
                   </div>
 
                   {(goal.uom === 'NUMERIC' || goal.uom === 'PERCENTAGE') && (
-                    <div className="space-y-3 md:col-span-12 border-t border-slate-100 pt-4 mt-2">
-                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Optimization Direction</label>
+                    <div className="space-y-3 md:col-span-12 border-t border-border pt-4 mt-2">
+                      <label className="text-xs font-bold text-foreground uppercase tracking-wider">Optimization Direction</label>
                       <div className="flex gap-4">
-                        <label className={`flex-1 flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all ${goal.optimizationDirection === 'higher_better' ? 'border-indigo-500 bg-indigo-50 ring-1 ring-indigo-500' : 'border-slate-200 bg-white hover:bg-slate-50'}`}>
+                        <label className={`flex-1 flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all ${goal.optimizationDirection === 'higher_better' ? 'border-primary bg-primary/10 ring-1 ring-primary' : 'border-border bg-card hover:bg-background'}`}>
                           <div>
-                            <p className={`text-sm font-semibold ${goal.optimizationDirection === 'higher_better' ? 'text-indigo-700' : 'text-slate-700'}`}>Higher is Better</p>
-                            <p className="text-xs text-slate-500 mt-0.5">Goal is to maximize this metric</p>
+                            <p className={`text-sm font-semibold ${goal.optimizationDirection === 'higher_better' ? 'text-primary' : 'text-foreground'}`}>Higher is Better</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">Goal is to maximize this metric</p>
                           </div>
                           <input 
                             type="radio" 
@@ -252,13 +252,13 @@ export default function CreateGoalSheetPage() {
                             value="higher_better" 
                             checked={goal.optimizationDirection === 'higher_better'}
                             onChange={(e) => handleChange(idx, "optimizationDirection", e.target.value)}
-                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300" 
+                            className="h-4 w-4 text-primary focus:ring-primary border-gray-300" 
                           />
                         </label>
-                        <label className={`flex-1 flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all ${goal.optimizationDirection === 'lower_better' ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500' : 'border-slate-200 bg-white hover:bg-slate-50'}`}>
+                        <label className={`flex-1 flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all ${goal.optimizationDirection === 'lower_better' ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500' : 'border-border bg-card hover:bg-background'}`}>
                           <div>
-                            <p className={`text-sm font-semibold ${goal.optimizationDirection === 'lower_better' ? 'text-blue-700' : 'text-slate-700'}`}>Lower is Better</p>
-                            <p className="text-xs text-slate-500 mt-0.5">Goal is to minimize this metric</p>
+                            <p className={`text-sm font-semibold ${goal.optimizationDirection === 'lower_better' ? 'text-blue-700' : 'text-foreground'}`}>Lower is Better</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">Goal is to minimize this metric</p>
                           </div>
                           <input 
                             type="radio" 
@@ -279,7 +279,7 @@ export default function CreateGoalSheetPage() {
             <Button 
               type="button" 
               variant="outline" 
-              className="w-full border-dashed border-2 border-slate-300 bg-transparent py-8 text-slate-500 hover:text-slate-800 hover:bg-slate-100 hover:border-slate-400"
+              className="w-full border-dashed border-2 border-slate-300 bg-transparent py-8 text-muted-foreground hover:text-foreground hover:bg-secondary hover:border-slate-400"
               onClick={handleAddGoal}
               disabled={goals.length >= 8}
             >
@@ -291,17 +291,17 @@ export default function CreateGoalSheetPage() {
       </div>
 
       {/* Sticky Bottom Action Bar */}
-      <div className="sticky bottom-0 p-4 bg-white/95 backdrop-blur border-t border-slate-200 z-30">
+      <div className="sticky bottom-0 p-4 bg-card/95 backdrop-blur border-t border-border z-30">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-slate-600">
+            <span className="text-sm font-medium text-muted-foreground">
               {totalWeight === 100 ? 'Ready to save' : 'Weightage must be 100%'}
             </span>
           </div>
           <Button 
             onClick={handleSubmit} 
             disabled={isSubmitting || totalWeight !== 100}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-8"
+            className="bg-primary hover:bg-primary/90 text-white px-8"
           >
             <Save className="h-4 w-4 mr-2" />
             {isSubmitting ? 'Saving...' : 'Save Draft Sheet'}

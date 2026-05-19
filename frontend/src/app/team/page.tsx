@@ -49,48 +49,48 @@ export default function MyTeamPage() {
   const draft = reports.filter(r => r.goalSheets?.[0]?.status === 'DRAFT' || !r.goalSheets?.length).length
 
   return (
-    <div className="flex flex-col flex-1 bg-slate-50/50">
+    <div className="flex flex-col flex-1 bg-background">
       <div className="flex-1 overflow-auto p-8">
         <div className="max-w-5xl mx-auto">
 
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-slate-900 mb-1">My Team</h1>
-            <p className="text-sm text-slate-500">Overview of your direct reports and their goal progress.</p>
+            <h1 className="text-2xl font-bold text-foreground mb-1">My Team</h1>
+            <p className="text-sm text-muted-foreground">Overview of your direct reports and their goal progress.</p>
           </div>
 
           {/* Summary Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-            <Card className="bg-white border-slate-200 shadow-sm rounded-xl">
+            <Card className="bg-card border-border shadow-sm rounded-xl">
               <CardContent className="p-5 flex items-center gap-4">
-                <div className="h-10 w-10 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-                  <Users className="h-5 w-5 text-indigo-600" />
+                <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <Users className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-2xl font-black text-slate-900">{reports.length}</p>
-                  <p className="text-xs font-semibold text-slate-500">Direct Reports</p>
+                  <p className="text-2xl font-black text-foreground">{reports.length}</p>
+                  <p className="text-xs font-semibold text-muted-foreground">Direct Reports</p>
                 </div>
               </CardContent>
             </Card>
-            <Card className="bg-white border-slate-200 shadow-sm rounded-xl">
+            <Card className="bg-card border-border shadow-sm rounded-xl">
               <CardContent className="p-5 flex items-center gap-4">
                 <div className="h-10 w-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
                   <Clock className="h-5 w-5 text-amber-600" />
                 </div>
                 <div>
                   <p className="text-2xl font-black text-amber-600">{pending}</p>
-                  <p className="text-xs font-semibold text-slate-500">Pending Approval</p>
+                  <p className="text-xs font-semibold text-muted-foreground">Pending Approval</p>
                 </div>
               </CardContent>
             </Card>
-            <Card className="bg-white border-slate-200 shadow-sm rounded-xl">
+            <Card className="bg-card border-border shadow-sm rounded-xl">
               <CardContent className="p-5 flex items-center gap-4">
                 <div className="h-10 w-10 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
                   <CheckCircle2 className="h-5 w-5 text-emerald-600" />
                 </div>
                 <div>
                   <p className="text-2xl font-black text-emerald-600">{approved}</p>
-                  <p className="text-xs font-semibold text-slate-500">Goals Approved</p>
+                  <p className="text-xs font-semibold text-muted-foreground">Goals Approved</p>
                 </div>
               </CardContent>
             </Card>
@@ -98,24 +98,24 @@ export default function MyTeamPage() {
 
           {isLoading ? (
             <div className="flex items-center justify-center h-48 gap-4">
-              <div className="h-6 w-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-              <p className="text-sm text-slate-500">Loading team...</p>
+              <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              <p className="text-sm text-muted-foreground">Loading team...</p>
             </div>
           ) : reports.length === 0 ? (
-            <Card className="border-slate-200 shadow-sm rounded-xl p-16 text-center bg-white">
-              <div className="h-16 w-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-slate-400" />
+            <Card className="border-border shadow-sm rounded-xl p-16 text-center bg-card">
+              <div className="h-16 w-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">No Direct Reports</h3>
-              <p className="text-slate-500 text-sm">You don't have any direct reports assigned yet.</p>
+              <h3 className="text-xl font-bold text-foreground mb-2">No Direct Reports</h3>
+              <p className="text-muted-foreground text-sm">You don't have any direct reports assigned yet.</p>
             </Card>
           ) : (
-            <Card className="border-slate-200 shadow-sm rounded-xl overflow-hidden bg-white">
-              <CardHeader className="border-b border-slate-100 px-6 py-4">
-                <CardTitle className="text-base font-semibold text-slate-800">Team Members ({reports.length})</CardTitle>
+            <Card className="border-border shadow-sm rounded-xl overflow-hidden bg-card">
+              <CardHeader className="border-b border-border px-6 py-4">
+                <CardTitle className="text-base font-semibold text-foreground">Team Members ({reports.length})</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-border">
                   {reports.map((member, idx) => {
                     const sheet = member.goalSheets?.[0]
                     const status = sheet?.status || 'NO_SHEET'
@@ -123,24 +123,24 @@ export default function MyTeamPage() {
                     const statusConfig: Record<string, { label: string; color: string; bg: string; icon: any }> = {
                       APPROVED:         { label: 'Approved',          color: 'text-emerald-700', bg: 'bg-emerald-50', icon: CheckCircle2 },
                       PENDING_APPROVAL: { label: 'Pending Approval',  color: 'text-amber-700',   bg: 'bg-amber-50',   icon: Clock },
-                      DRAFT:            { label: 'Draft',             color: 'text-slate-600',   bg: 'bg-slate-100',  icon: Target },
+                      DRAFT:            { label: 'Draft',             color: 'text-muted-foreground',   bg: 'bg-secondary',  icon: Target },
                       RETURNED:         { label: 'Returned',          color: 'text-red-700',     bg: 'bg-red-50',     icon: AlertCircle },
-                      NO_SHEET:         { label: 'No Goal Sheet',     color: 'text-slate-400',   bg: 'bg-slate-50',   icon: AlertCircle },
+                      NO_SHEET:         { label: 'No Goal Sheet',     color: 'text-muted-foreground',   bg: 'bg-background',   icon: AlertCircle },
                     }
                     const cfg = statusConfig[status]
                     const StatusIcon = cfg.icon
 
                     return (
-                      <div key={member.id} className="p-5 flex items-center gap-4 hover:bg-slate-50/70 transition-colors">
+                      <div key={member.id} className="p-5 flex items-center gap-4 hover:bg-background/70 transition-colors">
                         {/* Avatar */}
-                        <div className="h-11 w-11 rounded-full bg-indigo-100 flex items-center justify-center font-bold text-indigo-700 text-sm shrink-0">
+                        <div className="h-11 w-11 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm shrink-0">
                           {(member.firstName?.[0] || '') + (member.lastName?.[0] || '')}
                         </div>
 
                         {/* Info */}
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-slate-800">{member.firstName} {member.lastName}</p>
-                          <p className="text-xs text-slate-500">{member.email}</p>
+                          <p className="text-sm font-semibold text-foreground">{member.firstName} {member.lastName}</p>
+                          <p className="text-xs text-muted-foreground">{member.email}</p>
                         </div>
 
                         {/* Status */}
@@ -160,7 +160,7 @@ export default function MyTeamPage() {
                           )}
                           {status === 'APPROVED' && (
                             <Link href="/manager/checkins">
-                              <Button size="sm" variant="outline" className="border-slate-200 text-slate-700 h-8 text-xs">
+                              <Button size="sm" variant="outline" className="border-border text-foreground h-8 text-xs">
                                 Check-in
                               </Button>
                             </Link>
@@ -177,30 +177,30 @@ export default function MyTeamPage() {
           {/* Quick Actions */}
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Link href="/manager/approvals">
-              <Card className="border-slate-200 shadow-sm rounded-xl bg-white hover:border-indigo-200 hover:shadow-md transition-all cursor-pointer group">
+              <Card className="border-border shadow-sm rounded-xl bg-card hover:border-primary/20 hover:shadow-md transition-all cursor-pointer group">
                 <CardContent className="p-5 flex items-center gap-4">
                   <div className="h-10 w-10 rounded-lg bg-amber-50 flex items-center justify-center group-hover:bg-amber-100 transition-colors">
                     <UserCheck className="h-5 w-5 text-amber-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-800">Pending Approvals</p>
-                    <p className="text-xs text-slate-500">{pending} sheet{pending !== 1 ? 's' : ''} waiting for review</p>
+                    <p className="text-sm font-semibold text-foreground">Pending Approvals</p>
+                    <p className="text-xs text-muted-foreground">{pending} sheet{pending !== 1 ? 's' : ''} waiting for review</p>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-slate-400 ml-auto group-hover:text-slate-600" />
+                  <ChevronRight className="h-4 w-4 text-muted-foreground ml-auto group-hover:text-muted-foreground" />
                 </CardContent>
               </Card>
             </Link>
             <Link href="/manager/checkins">
-              <Card className="border-slate-200 shadow-sm rounded-xl bg-white hover:border-indigo-200 hover:shadow-md transition-all cursor-pointer group">
+              <Card className="border-border shadow-sm rounded-xl bg-card hover:border-primary/20 hover:shadow-md transition-all cursor-pointer group">
                 <CardContent className="p-5 flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-lg bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-100 transition-colors">
-                    <BarChart2 className="h-5 w-5 text-indigo-600" />
+                  <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                    <BarChart2 className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-800">Quarterly Check-ins</p>
-                    <p className="text-xs text-slate-500">{approved} member{approved !== 1 ? 's' : ''} ready for check-in</p>
+                    <p className="text-sm font-semibold text-foreground">Quarterly Check-ins</p>
+                    <p className="text-xs text-muted-foreground">{approved} member{approved !== 1 ? 's' : ''} ready for check-in</p>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-slate-400 ml-auto group-hover:text-slate-600" />
+                  <ChevronRight className="h-4 w-4 text-muted-foreground ml-auto group-hover:text-muted-foreground" />
                 </CardContent>
               </Card>
             </Link>

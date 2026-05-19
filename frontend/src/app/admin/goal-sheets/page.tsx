@@ -13,7 +13,7 @@ import { ChevronLeft, Unlock, CheckCircle2, Clock, AlertCircle, FileText, Layers
 const STATUS_OPTIONS = ["ALL", "DRAFT", "PENDING_APPROVAL", "APPROVED", "RETURNED"]
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  DRAFT:            { label: 'Draft',             color: 'text-slate-600',   bg: 'bg-slate-100' },
+  DRAFT:            { label: 'Draft',             color: 'text-muted-foreground',   bg: 'bg-secondary' },
   PENDING_APPROVAL: { label: 'Pending Approval',  color: 'text-amber-700',   bg: 'bg-amber-50' },
   APPROVED:         { label: 'Approved',           color: 'text-emerald-700', bg: 'bg-emerald-50' },
   RETURNED:         { label: 'Returned',           color: 'text-red-700',     bg: 'bg-red-50' },
@@ -78,16 +78,16 @@ export default function AdminGoalSheetsPage() {
   if (!isAuthenticated || role !== "ADMIN") return null
 
   return (
-    <div className="flex flex-col flex-1 bg-slate-50/50">
+    <div className="flex flex-col flex-1 bg-background">
       <div className="flex-1 overflow-auto p-8">
         <div className="max-w-6xl mx-auto">
 
           <div className="mb-8">
-            <Link href="/admin" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm hover:bg-slate-50 mb-6">
+            <Link href="/admin" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground bg-card border border-border px-3 py-1.5 rounded-full shadow-sm hover:bg-background mb-6">
               <ChevronLeft className="h-4 w-4 mr-1" /> Admin Dashboard
             </Link>
-            <h1 className="text-2xl font-bold text-slate-900 mb-1">All Goal Sheets</h1>
-            <p className="text-sm text-slate-500">Org-wide view of all employee goal sheets. Unlock approved sheets for exceptional edits.</p>
+            <h1 className="text-2xl font-bold text-foreground mb-1">All Goal Sheets</h1>
+            <p className="text-sm text-muted-foreground">Org-wide view of all employee goal sheets. Unlock approved sheets for exceptional edits.</p>
           </div>
 
           {/* Status Filter */}
@@ -95,7 +95,7 @@ export default function AdminGoalSheetsPage() {
             {STATUS_OPTIONS.map(s => (
               <button key={s} onClick={() => setStatusFilter(s)}
                 className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all ${
-                  statusFilter === s ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600 hover:border-indigo-300'
+                  statusFilter === s ? 'bg-primary text-white shadow-sm' : 'bg-card border border-border text-muted-foreground hover:border-primary/30'
                 }`}>
                 {s.replace('_', ' ')}
               </button>
@@ -104,28 +104,28 @@ export default function AdminGoalSheetsPage() {
 
           {isLoading ? (
             <div className="flex items-center justify-center h-48">
-              <div className="h-6 w-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+              <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             </div>
           ) : sheets.length === 0 ? (
-            <Card className="border-slate-200 shadow-sm rounded-xl p-12 text-center bg-white">
-              <Layers className="h-10 w-10 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-500 font-medium">No goal sheets found</p>
+            <Card className="border-border shadow-sm rounded-xl p-12 text-center bg-card">
+              <Layers className="h-10 w-10 text-muted-foreground/40 mx-auto mb-3" />
+              <p className="text-muted-foreground font-medium">No goal sheets found</p>
             </Card>
           ) : (
             <div className="space-y-4">
               {sheets.map(sheet => {
                 const cfg = STATUS_CONFIG[sheet.status] || STATUS_CONFIG.DRAFT
                 return (
-                  <Card key={sheet.id} className="border-slate-200 shadow-sm rounded-xl overflow-hidden bg-white">
-                    <CardHeader className="bg-slate-50 border-b border-slate-100 px-6 py-4">
+                  <Card key={sheet.id} className="border-border shadow-sm rounded-xl overflow-hidden bg-card">
+                    <CardHeader className="bg-background border-b border-border px-6 py-4">
                       <div className="flex items-center justify-between gap-4 flex-wrap">
                         <div className="flex items-center gap-3">
-                          <div className="h-9 w-9 rounded-full bg-indigo-100 flex items-center justify-center font-bold text-indigo-700 text-xs">
+                          <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs">
                             {(sheet.employee?.firstName?.[0] || '') + (sheet.employee?.lastName?.[0] || '')}
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <CardTitle className="text-sm font-bold text-slate-800">
+                              <CardTitle className="text-sm font-bold text-foreground">
                                 {sheet.employee?.firstName} {sheet.employee?.lastName}
                               </CardTitle>
                               <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${cfg.bg} ${cfg.color}`}>
@@ -157,7 +157,7 @@ export default function AdminGoalSheetsPage() {
                             Provide a justification for unlocking this approved goal sheet:
                           </p>
                           <textarea
-                            className="w-full rounded-md border border-amber-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/30 min-h-[80px] resize-y"
+                            className="w-full rounded-md border border-amber-300 bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/30 min-h-[80px] resize-y"
                             placeholder="e.g., Employee's role changed; goals need to be updated to reflect new responsibilities."
                             value={justification}
                             onChange={e => setJustification(e.target.value)}
@@ -172,16 +172,16 @@ export default function AdminGoalSheetsPage() {
                       )}
                     </CardHeader>
                     <CardContent className="p-0">
-                      <div className="divide-y divide-slate-100">
+                      <div className="divide-y divide-border">
                         {sheet.goals?.slice(0, 3).map((goal: any) => (
                           <div key={goal.id} className="px-6 py-3 flex items-center gap-4">
-                            <span className="text-[10px] font-bold uppercase text-slate-400 bg-slate-100 px-2 py-0.5 rounded shrink-0">{goal.thrustArea}</span>
-                            <p className="text-sm text-slate-700 flex-1 truncate">{goal.title}</p>
-                            <span className="text-xs font-bold text-indigo-600 shrink-0">{goal.weightage}%</span>
+                            <span className="text-[10px] font-bold uppercase text-muted-foreground bg-secondary px-2 py-0.5 rounded shrink-0">{goal.thrustArea}</span>
+                            <p className="text-sm text-foreground flex-1 truncate">{goal.title}</p>
+                            <span className="text-xs font-bold text-primary shrink-0">{goal.weightage}%</span>
                           </div>
                         ))}
                         {sheet.goals?.length > 3 && (
-                          <div className="px-6 py-2 text-xs text-slate-400 font-medium">
+                          <div className="px-6 py-2 text-xs text-muted-foreground font-medium">
                             +{sheet.goals.length - 3} more goals...
                           </div>
                         )}

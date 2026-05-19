@@ -89,20 +89,20 @@ export default function AdminCyclesPage() {
   if (!isAuthenticated || role !== "ADMIN") return null
 
   return (
-    <div className="flex flex-col flex-1 bg-slate-50/50">
+    <div className="flex flex-col flex-1 bg-background">
       <div className="flex-1 overflow-auto p-8">
         <div className="max-w-4xl mx-auto">
 
           <div className="mb-8">
-            <Link href="/admin" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm hover:bg-slate-50 mb-6">
+            <Link href="/admin" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground bg-card border border-border px-3 py-1.5 rounded-full shadow-sm hover:bg-background mb-6">
               <ChevronLeft className="h-4 w-4 mr-1" /> Admin Dashboard
             </Link>
             <div className="flex items-end justify-between">
               <div>
-                <h1 className="text-2xl font-bold text-slate-900 mb-1">Performance Cycles</h1>
-                <p className="text-sm text-slate-500">Manage fiscal year cycles and their phases.</p>
+                <h1 className="text-2xl font-bold text-foreground mb-1">Performance Cycles</h1>
+                <p className="text-sm text-muted-foreground">Manage fiscal year cycles and their phases.</p>
               </div>
-              <Button onClick={() => setShowForm(!showForm)} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+              <Button onClick={() => setShowForm(!showForm)} className="bg-primary hover:bg-primary/90 text-white">
                 <Plus className="h-4 w-4 mr-2" /> New Cycle
               </Button>
             </div>
@@ -110,31 +110,31 @@ export default function AdminCyclesPage() {
 
           {/* Create Form */}
           {showForm && (
-            <Card className="border-indigo-200 shadow-sm rounded-xl bg-white mb-6">
-              <CardHeader className="border-b border-slate-100 px-6 py-4">
-                <CardTitle className="text-base font-semibold text-slate-800">Create New Cycle</CardTitle>
+            <Card className="border-primary/20 shadow-sm rounded-xl bg-card mb-6">
+              <CardHeader className="border-b border-border px-6 py-4">
+                <CardTitle className="text-base font-semibold text-foreground">Create New Cycle</CardTitle>
               </CardHeader>
               <CardContent className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Cycle Name</label>
+                  <label className="text-xs font-bold text-foreground uppercase tracking-wider">Cycle Name</label>
                   <input
-                    className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm"
+                    className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm"
                     placeholder="e.g., FY 2027"
                     value={form.name}
                     onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Year</label>
+                  <label className="text-xs font-bold text-foreground uppercase tracking-wider">Year</label>
                   <input
                     type="number"
-                    className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm font-mono"
+                    className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm font-mono"
                     value={form.year}
                     onChange={e => setForm(prev => ({ ...prev, year: e.target.value }))}
                   />
                 </div>
                 <div className="flex items-end gap-2">
-                  <Button onClick={handleCreate} disabled={isSaving} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                  <Button onClick={handleCreate} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-white">
                     {isSaving ? "Creating..." : "Create & Activate"}
                   </Button>
                   <Button variant="ghost" onClick={() => setShowForm(false)}>Cancel</Button>
@@ -146,37 +146,37 @@ export default function AdminCyclesPage() {
           {/* Cycles List */}
           {isLoading ? (
             <div className="flex items-center justify-center h-48 gap-4">
-              <div className="h-6 w-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+              <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             </div>
           ) : (
-            <Card className="border-slate-200 shadow-sm rounded-xl overflow-hidden bg-white">
+            <Card className="border-border shadow-sm rounded-xl overflow-hidden bg-card">
               <CardContent className="p-0">
                 {cycles.length === 0 ? (
-                  <div className="p-12 text-center text-slate-500">No performance cycles yet.</div>
+                  <div className="p-12 text-center text-muted-foreground">No performance cycles yet.</div>
                 ) : (
-                  <div className="divide-y divide-slate-100">
+                  <div className="divide-y divide-border">
                     {cycles.map(cycle => {
                       const phases = JSON.parse(cycle.phases || '[]')
                       return (
                         <div key={cycle.id} className="p-5 flex items-center gap-4">
-                          <div className={`h-10 w-10 rounded-lg flex items-center justify-center shrink-0 ${cycle.isActive ? 'bg-emerald-100' : 'bg-slate-100'}`}>
+                          <div className={`h-10 w-10 rounded-lg flex items-center justify-center shrink-0 ${cycle.isActive ? 'bg-emerald-100' : 'bg-secondary'}`}>
                             {cycle.isActive
                               ? <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-                              : <Circle className="h-5 w-5 text-slate-400" />
+                              : <Circle className="h-5 w-5 text-muted-foreground" />
                             }
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                              <p className="text-sm font-bold text-slate-800">{cycle.name}</p>
+                              <p className="text-sm font-bold text-foreground">{cycle.name}</p>
                               {cycle.isActive && (
                                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">Active</span>
                               )}
                             </div>
-                            <p className="text-xs text-slate-500 mt-0.5">{phases.length} phases · Year {cycle.year}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">{phases.length} phases · Year {cycle.year}</p>
                           </div>
                           <div className="flex gap-2 shrink-0">
                             {!cycle.isActive && (
-                              <Button size="sm" variant="outline" className="border-slate-200 text-slate-700 h-8 text-xs" onClick={() => handleSetActive(cycle.id)}>
+                              <Button size="sm" variant="outline" className="border-border text-foreground h-8 text-xs" onClick={() => handleSetActive(cycle.id)}>
                                 Set Active
                               </Button>
                             )}
