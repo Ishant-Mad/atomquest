@@ -27,6 +27,7 @@ export default function AdminEscalationsPage() {
   const { isAuthenticated } = useAuth()
   const { role } = useRole()
   const router = useRouter()
+  const [backendStatus, setBackendStatus] = useState<"checking" | "sleeping" | "ready">("checking")
   const [data, setData] = useState({
     rules: [] as any[],
     violations: [] as any[],
@@ -46,6 +47,7 @@ export default function AdminEscalationsPage() {
       try {
         const payload = await fetchJsonWithRetry("/api/admin/escalations", { retries: 2, retryDelayMs: 2500 })
         if (!cancelled) {
+          setBackendStatus("ready")
           setData({
             rules: Array.isArray(payload?.rules) ? payload.rules : [],
             violations: Array.isArray(payload?.violations) ? payload.violations : [],
@@ -56,13 +58,14 @@ export default function AdminEscalationsPage() {
             },
             cycle: payload?.cycle || null,
           })
+          setIsLoading(false)
         }
       } catch {
         if (!cancelled) {
+          setBackendStatus("sleeping")
           toast.error("Backend is waking up. Escalations will load in a moment.")
+          setTimeout(loadEscalations, 3000)
         }
-      } finally {
-        if (!cancelled) setIsLoading(false)
       }
     }
 
@@ -75,12 +78,14 @@ export default function AdminEscalationsPage() {
 
   if (!isAuthenticated || role !== "ADMIN") return null
 
-  if (isLoading) {
+  if (isLoading || backendStatus !== "ready") {
     return (
       <div className="flex min-h-[60vh] items-center justify-center p-8 bg-background">
         <div className="w-full max-w-6xl rounded-2xl border border-border bg-card/80 p-6 shadow-sm">
           <div className="inline-flex rounded-md border border-primary/35 bg-primary/5 px-2.5 py-1 text-[11px] font-medium text-primary/90">
-            Backend is waking up. Escalations will load in a moment.
+            {backendStatus === "sleeping"
+              ? "Backend is waking up. Escalations will load in a moment."
+              : "Knocking on the backend door... it may be snoozing."}
           </div>
 
           <div className="mt-6 space-y-4 opacity-35 grayscale animate-pulse pointer-events-none select-none">

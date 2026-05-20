@@ -24,6 +24,7 @@ export default function AdminAnalyticsPage() {
   const { isAuthenticated } = useAuth()
   const { role } = useRole()
   const router = useRouter()
+  const [backendStatus, setBackendStatus] = useState<"checking" | "sleeping" | "ready">("checking")
   const [data, setData] = useState({
     thrustAreaDistribution: [] as any[],
     uomDistribution: [] as any[],
@@ -51,6 +52,7 @@ export default function AdminAnalyticsPage() {
       try {
         const payload = await fetchJsonWithRetry("/api/admin/analytics", { retries: 2, retryDelayMs: 2500 })
         if (!cancelled) {
+          setBackendStatus("ready")
           setData({
             thrustAreaDistribution: Array.isArray(payload?.thrustAreaDistribution) ? payload.thrustAreaDistribution : [],
             uomDistribution: Array.isArray(payload?.uomDistribution) ? payload.uomDistribution : [],
@@ -66,13 +68,14 @@ export default function AdminAnalyticsPage() {
             totalGoals: payload?.totalGoals || 0,
             cycle: payload?.cycle || null,
           })
+          setIsLoading(false)
         }
       } catch {
         if (!cancelled) {
+          setBackendStatus("sleeping")
           toast.error("Backend is waking up. Analytics will load in a moment.")
+          setTimeout(loadAnalytics, 3000)
         }
-      } finally {
-        if (!cancelled) setIsLoading(false)
       }
     }
 
@@ -85,12 +88,14 @@ export default function AdminAnalyticsPage() {
 
   if (!isAuthenticated || role !== "ADMIN") return null
 
-  if (isLoading) {
+  if (isLoading || backendStatus !== "ready") {
     return (
       <div className="flex min-h-[60vh] items-center justify-center p-8 bg-background">
         <div className="w-full max-w-7xl rounded-2xl border border-border bg-card/80 p-6 shadow-sm">
           <div className="inline-flex rounded-md border border-primary/35 bg-primary/5 px-2.5 py-1 text-[11px] font-medium text-primary/90">
-            Backend is waking up. Analytics will load in a moment.
+            {backendStatus === "sleeping"
+              ? "Backend is waking up. Analytics will load in a moment."
+              : "Knocking on the backend door... it may be snoozing."}
           </div>
 
           <div className="mt-6 space-y-4 opacity-35 grayscale animate-pulse pointer-events-none select-none">
