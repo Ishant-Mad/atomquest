@@ -364,6 +364,224 @@ router.get('/completion', (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: 'Failed to retrieve completion data' } });
     }
 }));
+// ─── Analytics ─────────────────────────────────────────────────────────────────
+router.get('/analytics', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const activeCycle = yield prisma.performanceCycle.findFirst({ where: { isActive: true } });
+        const cycleId = activeCycle === null || activeCycle === void 0 ? void 0 : activeCycle.id;
+        // 1. Goal distribution by Thrust Area
+        const allGoals = yield prisma.goal.findMany({
+            where: cycleId ? { goalSheet: { cycleId } } : {},
+            select: { thrustArea: true, uom: true, weightage: true, achievements: { orderBy: { updatedAt: 'desc' }, take: 1 } }
+        });
+        const thrustAreaDist = {};
+        const uomDist = {};
+        for (const g of allGoals) {
+            thrustAreaDist[g.thrustArea] = (thrustAreaDist[g.thrustArea] || 0) + 1;
+            uomDist[g.uom] = (uomDist[g.uom] || 0) + 1;
+        }
+        // 2. Goal sheet status distribution
+        const statusCounts = yield prisma.goalSheet.groupBy({
+            by: ['status'],
+            where: cycleId ? { cycleId } : {},
+            _count: true,
+        });
+        const statusDist = statusCounts.map(s => ({ status: s.status, count: s._count }));
+        // 3. QoQ achievement trends — average progress per quarter
+        const achievements = yield prisma.achievement.findMany({
+            where: cycleId ? { goal: { goalSheet: { cycleId } } } : {},
+            select: { quarter: true, progressScore: true }
+        });
+        const qoqMap = {};
+        for (const a of achievements) {
+            if (!qoqMap[a.quarter])
+                qoqMap[a.quarter] = { total: 0, count: 0 };
+            qoqMap[a.quarter].total += a.progressScore;
+            qoqMap[a.quarter].count += 1;
+        }
+        const qoqTrends = ['Q1', 'Q2', 'Q3', 'Q4'].map(q => {
+            var _a;
+            return ({
+                quarter: q,
+                avgScore: qoqMap[q] ? Math.round((qoqMap[q].total / qoqMap[q].count) * 10) / 10 : 0,
+                goalCount: ((_a = qoqMap[q]) === null || _a === void 0 ? void 0 : _a.count) || 0
+            });
+        });
+        // 4. Manager effectiveness — check-in completion rates per manager
+        const managers = yield prisma.user.findMany({
+            where: { roles: 'MANAGER', isActive: true },
+            select: {
+                id: true, firstName: true, lastName: true,
+                directReports: {
+                    where: { isActive: true },
+                    select: {
+                        id: true,
+                        goalSheets: {
+                            where: cycleId ? { cycleId, status: 'APPROVED' } : { status: 'APPROVED' },
+                            select: {
+                                checkIns: { select: { quarter: true, isCompleted: true } }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        const managerEffectiveness = managers.map(m => {
+            const totalReports = m.directReports.length;
+            const totalCheckIns = m.directReports.reduce((sum, r) => {
+                return sum + r.goalSheets.reduce((gSum, gs) => gSum + gs.checkIns.filter(c => c.isCompleted).length, 0);
+            }, 0);
+            const expectedCheckIns = totalReports * 4; // 4 quarters
+            return {
+                id: m.id,
+                name: `${m.firstName} ${m.lastName}`,
+                directReports: totalReports,
+                completedCheckIns: totalCheckIns,
+                completionRate: expectedCheckIns > 0 ? Math.round((totalCheckIns / expectedCheckIns) * 100) : 0
+            };
+        });
+        // 5. Dept-level heatmap data (by manager team × quarter)
+        const heatmapData = managers.map(m => {
+            const quarters = ['Q1', 'Q2', 'Q3', 'Q4'].map(q => {
+                let totalScore = 0, count = 0;
+                for (const r of m.directReports) {
+                    for (const gs of r.goalSheets) {
+                        const checkIn = gs.checkIns.find(c => c.quarter === q && c.isCompleted);
+                        if (checkIn)
+                            count++;
+                    }
+                }
+                return { quarter: q, completions: count, total: m.directReports.length };
+            });
+            return { manager: `${m.firstName} ${m.lastName}`, quarters };
+        });
+        res.json({
+            thrustAreaDistribution: Object.entries(thrustAreaDist).map(([name, count]) => ({ name, count })),
+            uomDistribution: Object.entries(uomDist).map(([name, count]) => ({ name, count })),
+            statusDistribution: statusDist,
+            qoqTrends,
+            managerEffectiveness,
+            heatmapData,
+            totalGoals: allGoals.length,
+            cycle: activeCycle
+        });
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: 'Failed to generate analytics' } });
+    }
+}));
+// ─── Escalation Rules ──────────────────────────────────────────────────────────
+// Get escalation status (simulated rule evaluation)
+router.get('/escalations', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const activeCycle = yield prisma.performanceCycle.findFirst({ where: { isActive: true } });
+        if (!activeCycle) {
+            res.json({ rules: [], violations: [] });
+            return;
+        }
+        const cycleStart = new Date(((_a = JSON.parse(activeCycle.phases)[0]) === null || _a === void 0 ? void 0 : _a.startDate) || activeCycle.createdAt);
+        const now = new Date();
+        const daysSinceCycleOpen = Math.floor((now.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24));
+        // Find employees who haven't submitted
+        const allEmployees = yield prisma.user.findMany({
+            where: { roles: 'EMPLOYEE', isActive: true },
+            select: {
+                id: true, firstName: true, lastName: true, email: true,
+                managerId: true,
+                manager: { select: { firstName: true, lastName: true } },
+                goalSheets: {
+                    where: { cycleId: activeCycle.id },
+                    select: { id: true, status: true, submittedAt: true, approvedAt: true }
+                }
+            }
+        });
+        const violations = [];
+        for (const emp of allEmployees) {
+            const sheet = emp.goalSheets[0];
+            // Rule 1: No submission within 14 days of cycle open
+            if (!sheet || sheet.status === 'DRAFT') {
+                if (daysSinceCycleOpen > 14) {
+                    violations.push({
+                        type: 'NO_SUBMISSION',
+                        severity: daysSinceCycleOpen > 30 ? 'HIGH' : 'MEDIUM',
+                        employee: `${emp.firstName} ${emp.lastName}`,
+                        employeeId: emp.id,
+                        manager: emp.manager ? `${emp.manager.firstName} ${emp.manager.lastName}` : 'No Manager',
+                        message: `Has not submitted goals (${daysSinceCycleOpen} days since cycle opened)`,
+                        daysOverdue: daysSinceCycleOpen - 14
+                    });
+                }
+            }
+            // Rule 2: Pending approval for more than 7 days
+            if ((sheet === null || sheet === void 0 ? void 0 : sheet.status) === 'PENDING_APPROVAL' && sheet.submittedAt) {
+                const daysPending = Math.floor((now.getTime() - new Date(sheet.submittedAt).getTime()) / (1000 * 60 * 60 * 24));
+                if (daysPending > 7) {
+                    violations.push({
+                        type: 'APPROVAL_DELAYED',
+                        severity: daysPending > 14 ? 'HIGH' : 'MEDIUM',
+                        employee: `${emp.firstName} ${emp.lastName}`,
+                        employeeId: emp.id,
+                        manager: emp.manager ? `${emp.manager.firstName} ${emp.manager.lastName}` : 'No Manager',
+                        message: `Goal sheet pending manager approval for ${daysPending} days`,
+                        daysOverdue: daysPending - 7
+                    });
+                }
+            }
+        }
+        // Rule 3: Check-in not completed (check quarterly windows)
+        const approvedSheets = yield prisma.goalSheet.findMany({
+            where: { cycleId: activeCycle.id, status: 'APPROVED' },
+            include: {
+                employee: { select: { id: true, firstName: true, lastName: true, manager: { select: { firstName: true, lastName: true } } } },
+                checkIns: true
+            }
+        });
+        const phases = JSON.parse(activeCycle.phases);
+        for (const phase of phases) {
+            if (['Q1', 'Q2', 'Q3', 'Q4'].includes(phase.phase)) {
+                const phaseEnd = new Date(phase.endDate);
+                if (now > phaseEnd) {
+                    // This quarter has passed — check if check-ins were done
+                    for (const sheet of approvedSheets) {
+                        const hasCheckIn = sheet.checkIns.some((c) => c.quarter === phase.phase && c.isCompleted);
+                        if (!hasCheckIn) {
+                            violations.push({
+                                type: 'CHECKIN_MISSED',
+                                severity: 'MEDIUM',
+                                employee: `${sheet.employee.firstName} ${sheet.employee.lastName}`,
+                                employeeId: sheet.employee.id,
+                                manager: sheet.employee.manager ? `${sheet.employee.manager.firstName} ${sheet.employee.manager.lastName}` : 'No Manager',
+                                message: `${phase.phase} check-in not completed (window closed ${phaseEnd.toLocaleDateString()})`,
+                                daysOverdue: Math.floor((now.getTime() - phaseEnd.getTime()) / (1000 * 60 * 60 * 24))
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        const rules = [
+            { id: 'NO_SUBMISSION', name: 'Goal Submission Deadline', description: 'Employee has not submitted goals within 14 days of cycle opening', escalationChain: 'Employee → Manager → HR', threshold: '14 days' },
+            { id: 'APPROVAL_DELAYED', name: 'Manager Approval SLA', description: 'Manager has not approved goals within 7 days of submission', escalationChain: 'Manager → Skip-level → HR', threshold: '7 days' },
+            { id: 'CHECKIN_MISSED', name: 'Quarterly Check-in Window', description: 'Quarterly check-in not completed before window closes', escalationChain: 'Employee → Manager → HR', threshold: 'End of quarter' },
+        ];
+        res.json({
+            rules,
+            violations: violations.sort((a, b) => b.daysOverdue - a.daysOverdue),
+            summary: {
+                total: violations.length,
+                high: violations.filter(v => v.severity === 'HIGH').length,
+                medium: violations.filter(v => v.severity === 'MEDIUM').length,
+            },
+            cycle: activeCycle
+        });
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: 'Failed to evaluate escalations' } });
+    }
+}));
 // Notifications for a user
 router.get('/notifications/:userId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

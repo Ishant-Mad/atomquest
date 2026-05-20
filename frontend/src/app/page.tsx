@@ -23,6 +23,9 @@ export default function LoginPage() {
     localStorage.removeItem("atomquest-token")
     localStorage.removeItem("atomquest-user")
     localStorage.removeItem("atomquest-role")
+    fetch(apiUrl("/api/health"), { cache: "no-store" }).catch(() => {
+      // Intentionally ignored: this is just a gentle wake-up ping.
+    })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -112,6 +115,9 @@ export default function LoginPage() {
             <div className="mb-6">
               <h1 className="text-lg font-heading font-semibold text-foreground">Sign in to your account</h1>
               <p className="text-sm text-muted-foreground mt-1">Enter your credentials to access your workspace.</p>
+              <p className="mt-2 inline-flex max-w-full rounded-md border border-primary/35 bg-primary/5 px-2.5 py-1 text-[11px] italic text-primary/90">
+                Free-tier backend is probably having a quick nap. We&apos;ll knock softly and wake it up. Please have patience.
+              </p>
             </div>
 
             <div className="space-y-4">
