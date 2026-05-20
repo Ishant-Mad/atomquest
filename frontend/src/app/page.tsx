@@ -14,18 +14,54 @@ export default function LoginPage() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [backendStatus, setBackendStatus] = useState<"checking" | "sleeping" | "ready">("checking")
   const { login } = useAuth()
   const { setRole } = useRole()
   const router = useRouter()
+
+  const backendReady = backendStatus === "ready"
 
   // Always start fresh on login page — clear any stale session immediately
   useEffect(() => {
     localStorage.removeItem("atomquest-token")
     localStorage.removeItem("atomquest-user")
     localStorage.removeItem("atomquest-role")
-    fetch(apiUrl("/api/health"), { cache: "no-store" }).catch(() => {
-      // Intentionally ignored: this is just a gentle wake-up ping.
-    })
+
+    let cancelled = false
+    let retryTimer: ReturnType<typeof setTimeout> | undefined
+
+    const probeBackend = async () => {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 1800)
+
+      try {
+        const res = await fetch(apiUrl("/api/health"), {
+          cache: "no-store",
+          signal: controller.signal,
+        })
+
+        if (!cancelled && res.ok) {
+          setBackendStatus("ready")
+          return
+        }
+
+        throw new Error("Backend asleep")
+      } catch {
+        if (!cancelled) {
+          setBackendStatus("sleeping")
+          retryTimer = setTimeout(probeBackend, 3500)
+        }
+      } finally {
+        clearTimeout(timeoutId)
+      }
+    }
+
+    probeBackend()
+
+    return () => {
+      cancelled = true
+      if (retryTimer) clearTimeout(retryTimer)
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -95,8 +131,12 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center p-4 bg-background">
       <motion.div
         initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+        animate={{
+          opacity: backendReady ? 1 : 0.72,
+          y: 0,
+          filter: backendReady ? "grayscale(0%)" : "grayscale(1%)",
+        }}
+        transition={{ duration: 0.35, ease: [0.25, 1, 0.5, 1] }}
         className="w-full max-w-[420px]"
       >
         {/* Logo */}
@@ -110,14 +150,28 @@ export default function LoginPage() {
         </div>
 
         {/* Sign in form */}
-        <div className="bg-card border border-border rounded-xl p-6">
+        <div className="bg-card border border-border rounded-xl p-6 relative overflow-hidden">
+          <div className="mb-4">
+            <div
+              className={`inline-flex max-w-full rounded-md border px-2.5 py-1 text-[11px] font-medium transition-all duration-300 ${
+                backendReady
+                  ? "border-primary/40 bg-primary/8 text-primary shadow-[0_0_0_1px_rgba(0,0,0,0.02)]"
+                  : "border-primary/35 bg-primary/5 text-primary/90"
+              }`}
+            >
+              {backendReady
+                ? "Ready to go! The backend has woken up and is back on duty."
+                : backendStatus === "sleeping"
+                  ? "Backend is on a free-tier nap. We&apos;re knocking softly. Please have patience."
+                  : "Knocking on the backend door... it may be snoozing."}
+            </div>
+          </div>
+
+          <div className={!backendReady ? "pointer-events-none select-none opacity-30 blur-[1px] transition duration-300" : "transition duration-300"}>
           <form onSubmit={handleLogin}>
             <div className="mb-6">
               <h1 className="text-lg font-heading font-semibold text-foreground">Sign in to your account</h1>
               <p className="text-sm text-muted-foreground mt-1">Enter your credentials to access your workspace.</p>
-              <p className="mt-2 inline-flex max-w-full rounded-md border border-primary/35 bg-primary/5 px-2.5 py-1 text-[11px] italic text-primary/90">
-                Free-tier backend is probably having a quick nap. We&apos;ll knock softly and wake it up. Please have patience.
-              </p>
             </div>
 
             <div className="space-y-4">
@@ -174,6 +228,7 @@ export default function LoginPage() {
                 </button>
               ))}
             </div>
+          </div>
           </div>
         </div>
       </motion.div>
