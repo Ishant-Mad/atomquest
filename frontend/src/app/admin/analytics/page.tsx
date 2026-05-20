@@ -13,7 +13,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend, LineChart, Line, Area, AreaChart
 } from "recharts"
-import { apiUrl } from "@/lib/api"
+import { fetchJsonWithRetry } from "@/lib/api"
 
 const COLORS = ['#6366f1', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#14b8a6']
 const STATUS_COLORS: Record<string, string> = {
@@ -24,30 +24,92 @@ export default function AdminAnalyticsPage() {
   const { isAuthenticated } = useAuth()
   const { role } = useRole()
   const router = useRouter()
-  const [data, setData] = useState<any>(null)
+  const [data, setData] = useState({
+    thrustAreaDistribution: [] as any[],
+    uomDistribution: [] as any[],
+    statusDistribution: [] as any[],
+    qoqTrends: [
+      { quarter: "Q1", avgScore: 0, goalCount: 0 },
+      { quarter: "Q2", avgScore: 0, goalCount: 0 },
+      { quarter: "Q3", avgScore: 0, goalCount: 0 },
+      { quarter: "Q4", avgScore: 0, goalCount: 0 },
+    ],
+    managerEffectiveness: [] as any[],
+    heatmapData: [] as any[],
+    totalGoals: 0,
+    cycle: null as any,
+  })
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (!isAuthenticated) { router.push("/"); return }
-    if (role !== "ADMIN") { router.push("/dashboard"); return }
+    let cancelled = false
 
-    fetch(apiUrl("/api/admin/analytics"))
-      .then(r => r.json())
-      .then(d => { setData(d); setIsLoading(false) })
-      .catch(() => { toast.error("Failed to load analytics"); setIsLoading(false) })
+    const loadAnalytics = async () => {
+      if (!isAuthenticated) { router.push("/"); return }
+      if (role !== "ADMIN") { router.push("/dashboard"); return }
+
+      try {
+        const payload = await fetchJsonWithRetry("/api/admin/analytics", { retries: 2, retryDelayMs: 2500 })
+        if (!cancelled) {
+          setData({
+            thrustAreaDistribution: Array.isArray(payload?.thrustAreaDistribution) ? payload.thrustAreaDistribution : [],
+            uomDistribution: Array.isArray(payload?.uomDistribution) ? payload.uomDistribution : [],
+            statusDistribution: Array.isArray(payload?.statusDistribution) ? payload.statusDistribution : [],
+            qoqTrends: Array.isArray(payload?.qoqTrends) && payload.qoqTrends.length > 0 ? payload.qoqTrends : [
+              { quarter: "Q1", avgScore: 0, goalCount: 0 },
+              { quarter: "Q2", avgScore: 0, goalCount: 0 },
+              { quarter: "Q3", avgScore: 0, goalCount: 0 },
+              { quarter: "Q4", avgScore: 0, goalCount: 0 },
+            ],
+            managerEffectiveness: Array.isArray(payload?.managerEffectiveness) ? payload.managerEffectiveness : [],
+            heatmapData: Array.isArray(payload?.heatmapData) ? payload.heatmapData : [],
+            totalGoals: payload?.totalGoals || 0,
+            cycle: payload?.cycle || null,
+          })
+        }
+      } catch {
+        if (!cancelled) {
+          toast.error("Backend is waking up. Analytics will load in a moment.")
+        }
+      } finally {
+        if (!cancelled) setIsLoading(false)
+      }
+    }
+
+    loadAnalytics()
+
+    return () => {
+      cancelled = true
+    }
   }, [isAuthenticated, role, router])
 
   if (!isAuthenticated || role !== "ADMIN") return null
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="flex min-h-[60vh] items-center justify-center p-8 bg-background">
+        <div className="w-full max-w-7xl rounded-2xl border border-border bg-card/80 p-6 shadow-sm">
+          <div className="inline-flex rounded-md border border-primary/35 bg-primary/5 px-2.5 py-1 text-[11px] font-medium text-primary/90">
+            Backend is waking up. Analytics will load in a moment.
+          </div>
+
+          <div className="mt-6 space-y-4 opacity-35 grayscale animate-pulse pointer-events-none select-none">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="h-20 rounded-xl border border-border bg-muted" />
+              <div className="h-20 rounded-xl border border-border bg-muted" />
+              <div className="h-20 rounded-xl border border-border bg-muted" />
+              <div className="h-20 rounded-xl border border-border bg-muted" />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="h-72 rounded-xl border border-border bg-muted" />
+              <div className="h-72 rounded-xl border border-border bg-muted" />
+            </div>
+            <div className="h-80 rounded-xl border border-border bg-muted" />
+          </div>
+        </div>
       </div>
     )
   }
-
-  if (!data) return null
 
   const statusData = data.statusDistribution?.map((s: any) => ({
     name: s.status.replace('_', ' '),

@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress"
 import { toast } from "sonner"
 import { ChevronLeft, AlertTriangle, Clock, Shield, Users, ArrowRight, CheckCircle2, XCircle } from "lucide-react"
 import Link from "next/link"
-import { apiUrl } from "@/lib/api"
+import { fetchJsonWithRetry } from "@/lib/api"
 
 const SEVERITY_CONFIG: Record<string, { label: string; bg: string; color: string; icon: any }> = {
   HIGH: { label: 'High', bg: 'bg-red-50', color: 'text-red-700', icon: XCircle },
@@ -27,35 +27,79 @@ export default function AdminEscalationsPage() {
   const { isAuthenticated } = useAuth()
   const { role } = useRole()
   const router = useRouter()
-  const [data, setData] = useState<any>(null)
+  const [data, setData] = useState({
+    rules: [] as any[],
+    violations: [] as any[],
+    summary: { total: 0, high: 0, medium: 0 },
+    cycle: null as any,
+  })
   const [isLoading, setIsLoading] = useState(true)
   const [filterType, setFilterType] = useState("ALL")
 
   useEffect(() => {
-    if (!isAuthenticated) { router.push("/"); return }
-    if (role !== "ADMIN") { router.push("/dashboard"); return }
+    let cancelled = false
 
-    fetch(apiUrl("/api/admin/escalations"))
-      .then(r => r.json())
-      .then(d => { setData(d); setIsLoading(false) })
-      .catch(() => { toast.error("Failed to load escalation data"); setIsLoading(false) })
+    const loadEscalations = async () => {
+      if (!isAuthenticated) { router.push("/"); return }
+      if (role !== "ADMIN") { router.push("/dashboard"); return }
+
+      try {
+        const payload = await fetchJsonWithRetry("/api/admin/escalations", { retries: 2, retryDelayMs: 2500 })
+        if (!cancelled) {
+          setData({
+            rules: Array.isArray(payload?.rules) ? payload.rules : [],
+            violations: Array.isArray(payload?.violations) ? payload.violations : [],
+            summary: {
+              total: payload?.summary?.total || 0,
+              high: payload?.summary?.high || 0,
+              medium: payload?.summary?.medium || 0,
+            },
+            cycle: payload?.cycle || null,
+          })
+        }
+      } catch {
+        if (!cancelled) {
+          toast.error("Backend is waking up. Escalations will load in a moment.")
+        }
+      } finally {
+        if (!cancelled) setIsLoading(false)
+      }
+    }
+
+    loadEscalations()
+
+    return () => {
+      cancelled = true
+    }
   }, [isAuthenticated, role, router])
 
   if (!isAuthenticated || role !== "ADMIN") return null
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="flex min-h-[60vh] items-center justify-center p-8 bg-background">
+        <div className="w-full max-w-6xl rounded-2xl border border-border bg-card/80 p-6 shadow-sm">
+          <div className="inline-flex rounded-md border border-primary/35 bg-primary/5 px-2.5 py-1 text-[11px] font-medium text-primary/90">
+            Backend is waking up. Escalations will load in a moment.
+          </div>
+
+          <div className="mt-6 space-y-4 opacity-35 grayscale animate-pulse pointer-events-none select-none">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="h-24 rounded-xl border border-border bg-muted" />
+              <div className="h-24 rounded-xl border border-border bg-muted" />
+              <div className="h-24 rounded-xl border border-border bg-muted" />
+            </div>
+            <div className="h-36 rounded-xl border border-border bg-muted" />
+            <div className="h-56 rounded-xl border border-border bg-muted" />
+          </div>
+        </div>
       </div>
     )
   }
 
-  if (!data) return null
-
   const filteredViolations = filterType === "ALL"
     ? data.violations
-    : data.violations?.filter((v: any) => v.type === filterType) || []
+    : data.violations.filter((v: any) => v.type === filterType)
 
   return (
     <div className="flex flex-col flex-1 bg-background">
