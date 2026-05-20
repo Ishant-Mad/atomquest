@@ -9,6 +9,9 @@
     "build": "npx prisma generate && tsc",
     "postinstall": "npx prisma generate"
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
