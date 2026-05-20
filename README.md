@@ -10,45 +10,9 @@
 # Demo Screenshot
 <img width="1920" height="995" alt="image" src="https://github.com/user-attachments/assets/132da2af-1554-4ed2-b779-a4886558247b" />
 
-
-## 📋 Table of Contents
-- [Overview](#overview)
-- [Architecture](#-architecture)
-- [Feature Checklist (BRD Compliance)](#-feature-checklist--brd-compliance)
-- [Tech Stack](#-tech-stack)
-- [Quick Start](#-quick-start)
-- [Demo Credentials](#-demo-credentials)
-- [Module Walkthrough](#-module-walkthrough)
-- [Business Rules Enforced](#-business-rules-enforced)
-- [Cost Optimisation Strategy](#-cost-optimisation-strategy)
-- [Security Considerations](#-security-considerations)
-
----
-
-## Overview
-
-AtomQuest modernizes how organizations define, track, and evaluate employee objectives — replacing fragmented spreadsheets with a unified, transparent, and dynamic SaaS-grade portal. It implements the complete lifecycle: goal creation → manager approval → quarterly achievement tracking → check-ins → performance analytics, with full role-based access control and administrative oversight.
-
-**Key differentiators:**
-- **Strict BRD compliance** — Every business rule from §2.1 through §6.6 is enforced
-- **Bonus modules implemented** — Analytics, Escalation Monitor, and shared goal management
-- **Enterprise UI/UX** — Polished, professional interface using modern design patterns
-- **Zero-config demo** — Pre-seeded with realistic Indian enterprise data across 3 roles
-
----
-
 ## 🏗 Architecture
 
 <img width="6572" height="4816" alt="image" src="https://github.com/user-attachments/assets/603abe2c-9852-4848-8d00-c19266b6c581" />
-
-
-### Data Flow
-1. **Employee** creates goal sheet → saved as `DRAFT`
-2. **Employee** submits → status changes to `PENDING_APPROVAL`
-3. **Manager** reviews, optionally edits targets/weightages inline, then approves → `APPROVED`
-4. **Employee** records quarterly achievements → progress scores auto-calculated per UoM formula
-5. **Manager** conducts quarterly check-ins with feedback → `CheckIn` record created
-6. **Admin** monitors org-wide analytics, escalations, and audit trails
 
 ---
 
@@ -94,6 +58,60 @@ AtomQuest modernizes how organizations define, track, and evaluate employee obje
 | 7 | Email/Teams Notifications | §5.2 | ❌ |
 
 ---
+
+## 📋 Table of Contents
+- [AtomQuest ⚛️ — Enterprise Performance Management Portal](#atomquest-️--enterprise-performance-management-portal)
+- [Live Link](#live-link)
+- [Demo Screenshot](#demo-screenshot)
+  - [🏗 Architecture](#-architecture)
+  - [✅ Feature Checklist — BRD Compliance](#-feature-checklist--brd-compliance)
+    - [Core Requirements (Mandatory)](#core-requirements-mandatory)
+    - [Good-to-Have Features (Bonus)](#good-to-have-features-bonus)
+  - [📋 Table of Contents](#-table-of-contents)
+  - [Overview](#overview)
+    - [Data Flow](#data-flow)
+  - [🛠 Tech Stack](#-tech-stack)
+  - [🚀 Quick Start](#-quick-start)
+    - [Prerequisites](#prerequisites)
+    - [1. Clone the repository](#1-clone-the-repository)
+    - [2. Backend Setup](#2-backend-setup)
+    - [3. Frontend Setup](#3-frontend-setup)
+  - [👤 Demo Credentials](#-demo-credentials)
+  - [📖 Module Walkthrough](#-module-walkthrough)
+    - [Employee Dashboard](#employee-dashboard)
+    - [Manager Dashboard](#manager-dashboard)
+    - [Admin Dashboard](#admin-dashboard)
+  - [📏 Business Rules Enforced](#-business-rules-enforced)
+  - [💰 Cost Optimisation Strategy](#-cost-optimisation-strategy)
+    - [Development Cost](#development-cost)
+    - [Operational Cost (Production)](#operational-cost-production)
+    - [Estimated TCO (Total Cost of Ownership)](#estimated-tco-total-cost-of-ownership)
+  - [🔒 Security Considerations](#-security-considerations)
+  - [📄 License](#-license)
+
+---
+
+## Overview
+
+AtomQuest modernizes how organizations define, track, and evaluate employee objectives — replacing fragmented spreadsheets with a unified, transparent, and dynamic SaaS-grade portal. It implements the complete lifecycle: goal creation → manager approval → quarterly achievement tracking → check-ins → performance analytics, with full role-based access control and administrative oversight.
+
+**Key differentiators:**
+- **Strict BRD compliance** — Every business rule from §2.1 through §6.6 is enforced
+- **Bonus modules implemented** — Analytics, Escalation Monitor, and shared goal management
+- **Enterprise UI/UX** — Polished, professional interface using modern design patterns
+- **Zero-config demo** — Pre-seeded with realistic Indian enterprise data across 3 roles
+
+---
+
+### Data Flow
+1. **Employee** creates goal sheet → saved as `DRAFT`
+2. **Employee** submits → status changes to `PENDING_APPROVAL`
+3. **Manager** reviews, optionally edits targets/weightages inline, then approves → `APPROVED`
+4. **Employee** records quarterly achievements → progress scores auto-calculated per UoM formula
+5. **Manager** conducts quarterly check-ins with feedback → `CheckIn` record created
+6. **Admin** monitors org-wide analytics, escalations, and audit trails
+
+
 
 ## 🛠 Tech Stack
 
