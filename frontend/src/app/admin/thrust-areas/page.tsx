@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import { ChevronLeft, Plus, Trash2, Edit2, Check, X, Tag, ToggleLeft, ToggleRight } from "lucide-react"
+import { apiUrl } from "@/lib/api"
 
 export default function AdminThrustAreasPage() {
   const { user, isAuthenticated } = useAuth()
@@ -25,7 +26,7 @@ export default function AdminThrustAreasPage() {
 
   const fetchAreas = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:5001/api/thrust-areas/all")
+      const res = await fetch(apiUrl("/api/thrust-areas/all"))
       if (!res.ok) throw new Error()
       setThrustAreas(await res.json())
     } catch {
@@ -44,7 +45,7 @@ export default function AdminThrustAreasPage() {
   const handleAdd = async () => {
     if (!newName.trim()) return
     try {
-      const res = await fetch("http://localhost:5001/api/thrust-areas", {
+      const res = await fetch(apiUrl("/api/thrust-areas"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: newName.trim(), description: newDesc.trim() })
@@ -60,7 +61,7 @@ export default function AdminThrustAreasPage() {
 
   const handleSaveEdit = async (id: string) => {
     try {
-      const res = await fetch(`http://localhost:5001/api/thrust-areas/${id}`, {
+      const res = await fetch(apiUrl(`/api/thrust-areas/${id}`), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: editName, description: editDesc })
@@ -76,7 +77,7 @@ export default function AdminThrustAreasPage() {
 
   const handleToggle = async (ta: any) => {
     try {
-      const res = await fetch(`http://localhost:5001/api/thrust-areas/${ta.id}`, {
+      const res = await fetch(apiUrl(`/api/thrust-areas/${ta.id}`), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isActive: !ta.isActive })
@@ -92,7 +93,7 @@ export default function AdminThrustAreasPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this thrust area?")) return
     try {
-      const res = await fetch(`http://localhost:5001/api/thrust-areas/${id}`, { method: "DELETE" })
+      const res = await fetch(apiUrl(`/api/thrust-areas/${id}`), { method: "DELETE" })
       if (!res.ok) throw new Error((await res.json()).error?.message)
       toast.success("Deleted")
       fetchAreas()

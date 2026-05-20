@@ -32,6 +32,7 @@ yarn-error.log*
 
 # Generated files
 generated/
+backend/prisma/dev.db
 
 # Misc
 .vercel

@@ -14,6 +14,7 @@ import {
   BarChart2, Layers, Activity, UserCheck, ArrowRight
 } from "lucide-react"
 import { motion } from "framer-motion"
+import { apiUrl } from "@/lib/api"
 
 /* ── Motion: Impeccable-compliant (quart ease-out, no spring/bounce) ──────── */
 const container: any = {
@@ -71,7 +72,7 @@ function EmployeeDashboard() {
 
   useEffect(() => {
     if (!user?.id) return
-    fetch(`http://localhost:5001/api/goal-sheets/employee/${user.id}`)
+    fetch(apiUrl(`/api/goal-sheets/employee/${user.id}`))
       .then(r => r.json())
       .then(d => { setSheets(d); setLoading(false) })
       .catch(() => setLoading(false))
@@ -180,8 +181,8 @@ function ManagerDashboard() {
   useEffect(() => {
     if (!user?.id) return
     Promise.all([
-      fetch(`http://localhost:5001/api/users/${user.id}/reports`).then(r => r.json()),
-      fetch(`http://localhost:5001/api/goal-sheets/pending/${user.id}`).then(r => r.json()),
+      fetch(apiUrl(`/api/users/${user.id}/reports`)).then(r => r.json()),
+      fetch(apiUrl(`/api/goal-sheets/pending/${user.id}`)).then(r => r.json()),
     ]).then(([teamData, pendingData]) => {
       setReports(teamData)
       setPendingCount(Array.isArray(pendingData) ? pendingData.length : 0)
@@ -261,7 +262,7 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/admin/stats")
+    fetch(apiUrl("/api/admin/stats"))
       .then(r => r.json())
       .then(d => { setStats(d); setLoading(false) })
       .catch(() => setLoading(false))

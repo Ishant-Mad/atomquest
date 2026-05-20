@@ -9,6 +9,7 @@ import { toast } from "sonner"
 import { PlusCircle, Trash2, ChevronLeft, Save, Target, AlignLeft, BarChart3, Scale } from "lucide-react"
 import Link from "next/link"
 import { Progress } from "@/components/ui/progress"
+import { apiUrl } from "@/lib/api"
 
 const UOM_OPTIONS = ["NUMERIC", "PERCENTAGE", "TIMELINE", "ZERO_BASED"]
 
@@ -25,11 +26,11 @@ export default function CreateGoalSheetPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetch("http://localhost:5001/api/thrust-areas")
+      fetch(apiUrl("/api/thrust-areas"))
         .then(res => res.json())
         .then(data => setThrustAreas(data))
         .catch(err => console.error("Failed to load thrust areas", err))
-      fetch("http://localhost:5001/api/admin/stats")
+      fetch(apiUrl("/api/admin/stats"))
         .then(res => res.json())
         .then(data => { if (data.activeCycle?.id) setActiveCycleId(data.activeCycle.id) })
         .catch(console.error)
@@ -82,7 +83,7 @@ export default function CreateGoalSheetPage() {
 
     setIsSubmitting(true)
     try {
-      const res = await fetch("http://localhost:5001/api/goal-sheets", {
+      const res = await fetch(apiUrl("/api/goal-sheets"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

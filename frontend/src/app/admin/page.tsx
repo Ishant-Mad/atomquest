@@ -14,6 +14,7 @@ import {
   TrendingUp, AlertCircle
 } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
+import { apiUrl } from "@/lib/api"
 
 export default function AdminDashboardPage() {
   const { user, isAuthenticated } = useAuth()
@@ -24,7 +25,7 @@ export default function AdminDashboardPage() {
 
   const fetchStats = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:5001/api/admin/stats")
+      const res = await fetch(apiUrl("/api/admin/stats"))
       if (!res.ok) throw new Error()
       setStats(await res.json())
     } catch {

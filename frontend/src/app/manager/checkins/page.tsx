@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { toast } from "sonner"
 import { Target, CheckCircle2, Clock, Users, Activity, MessageSquare } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
+import { apiUrl } from "@/lib/api"
 
 const QUARTER_OPTIONS = ["Q1", "Q2", "Q3", "Q4"] as const
 type Quarter = typeof QUARTER_OPTIONS[number]
@@ -48,7 +49,7 @@ export default function ManagerCheckinsPage() {
 
     // Fetch ONLY direct reports (not all users)
     if (user?.id) {
-      fetch(`http://localhost:5001/api/users/${user.id}/reports`)
+      fetch(apiUrl(`/api/users/${user.id}/reports`))
         .then(res => res.json())
         .then(data => {
           setEmployees(Array.isArray(data) ? data : [])
@@ -62,7 +63,7 @@ export default function ManagerCheckinsPage() {
 
   const loadEmployeeGoals = async (empId: string) => {
     try {
-      const res = await fetch(`http://localhost:5001/api/goal-sheets/employee/${empId}`)
+      const res = await fetch(apiUrl(`/api/goal-sheets/employee/${empId}`))
       if (!res.ok) throw new Error("Failed to load goals")
       const data = await res.json()
 
@@ -85,7 +86,7 @@ export default function ManagerCheckinsPage() {
 
     setIsSubmitting(true)
     try {
-      const res = await fetch(`http://localhost:5001/api/check-ins`, {
+      const res = await fetch(apiUrl(`/api/check-ins`), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { toast } from "sonner"
 import { ChevronLeft, CheckCircle2, XCircle, AlertCircle, RefreshCw } from "lucide-react"
+import { apiUrl } from "@/lib/api"
 
 export default function AdminCompletionPage() {
   const { user, isAuthenticated } = useAuth()
@@ -22,7 +23,7 @@ export default function AdminCompletionPage() {
   const fetchCompletion = useCallback(async () => {
     setIsLoading(true)
     try {
-      const res = await fetch(`http://localhost:5001/api/admin/completion?quarter=${quarter}`)
+      const res = await fetch(apiUrl(`/api/admin/completion?quarter=${quarter}`))
       if (!res.ok) throw new Error()
       setData(await res.json())
     } catch {

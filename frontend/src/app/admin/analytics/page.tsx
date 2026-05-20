@@ -13,6 +13,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend, LineChart, Line, Area, AreaChart
 } from "recharts"
+import { apiUrl } from "@/lib/api"
 
 const COLORS = ['#6366f1', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#14b8a6']
 const STATUS_COLORS: Record<string, string> = {
@@ -30,7 +31,7 @@ export default function AdminAnalyticsPage() {
     if (!isAuthenticated) { router.push("/"); return }
     if (role !== "ADMIN") { router.push("/dashboard"); return }
 
-    fetch("http://localhost:5001/api/admin/analytics")
+    fetch(apiUrl("/api/admin/analytics"))
       .then(r => r.json())
       .then(d => { setData(d); setIsLoading(false) })
       .catch(() => { toast.error("Failed to load analytics"); setIsLoading(false) })

@@ -13,6 +13,7 @@ import {
   BarChart2, Shield, UserPlus, UserCheck
 } from "lucide-react"
 import Link from "next/link"
+import { apiUrl } from "@/lib/api"
 
 export default function MyTeamPage() {
   const { user, isAuthenticated } = useAuth()
@@ -25,7 +26,7 @@ export default function MyTeamPage() {
     if (!user?.id) return
     setIsLoading(true)
     try {
-      const res = await fetch(`http://localhost:5001/api/users/${user.id}/reports`)
+      const res = await fetch(apiUrl(`/api/users/${user.id}/reports`))
       if (!res.ok) throw new Error()
       const data = await res.json()
       setReports(data)

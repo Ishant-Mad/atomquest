@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import { Settings, Plus, Trash2, CheckCircle2, Circle, ChevronLeft } from "lucide-react"
 import Link from "next/link"
+import { apiUrl } from "@/lib/api"
 
 export default function AdminCyclesPage() {
   const { user, isAuthenticated } = useAuth()
@@ -22,7 +23,7 @@ export default function AdminCyclesPage() {
 
   const fetchCycles = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:5001/api/admin/cycles")
+      const res = await fetch(apiUrl("/api/admin/cycles"))
       if (!res.ok) throw new Error()
       setCycles(await res.json())
     } catch {
@@ -42,7 +43,7 @@ export default function AdminCyclesPage() {
     if (!form.name || !form.year) return
     setIsSaving(true)
     try {
-      const res = await fetch("http://localhost:5001/api/admin/cycles", {
+      const res = await fetch(apiUrl("/api/admin/cycles"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form)
@@ -61,7 +62,7 @@ export default function AdminCyclesPage() {
 
   const handleSetActive = async (id: string) => {
     try {
-      const res = await fetch(`http://localhost:5001/api/admin/cycles/${id}`, {
+      const res = await fetch(apiUrl(`/api/admin/cycles/${id}`), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isActive: true })
@@ -77,7 +78,7 @@ export default function AdminCyclesPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this cycle? This cannot be undone.")) return
     try {
-      const res = await fetch(`http://localhost:5001/api/admin/cycles/${id}`, { method: "DELETE" })
+      const res = await fetch(apiUrl(`/api/admin/cycles/${id}`), { method: "DELETE" })
       if (!res.ok) throw new Error()
       toast.success("Cycle deleted")
       fetchCycles()

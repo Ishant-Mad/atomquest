@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress"
 import { toast } from "sonner"
 import { PlusCircle, Trash2, ChevronLeft, Save, Target, Scale, Lock } from "lucide-react"
 import Link from "next/link"
+import { apiUrl } from "@/lib/api"
 
 const UOM_OPTIONS = ["NUMERIC", "PERCENTAGE", "TIMELINE", "ZERO_BASED"]
 
@@ -28,8 +29,8 @@ function EditGoalSheetContent() {
     if (!isAuthenticated || !user?.id || !sheetId) return
 
     Promise.all([
-      fetch("http://localhost:5001/api/thrust-areas").then(r => r.json()),
-      fetch(`http://localhost:5001/api/goal-sheets/employee/${user.id}`).then(r => r.json()),
+      fetch(apiUrl("/api/thrust-areas")).then(r => r.json()),
+      fetch(apiUrl(`/api/goal-sheets/employee/${user.id}`)).then(r => r.json()),
     ]).then(([tas, sheets]) => {
       setThrustAreas(tas)
       const sheet = sheets.find((s: any) => s.id === sheetId)
@@ -119,7 +120,7 @@ function EditGoalSheetContent() {
 
     setIsSubmitting(true)
     try {
-      const res = await fetch(`http://localhost:5001/api/goal-sheets/${sheetId}`, {
+      const res = await fetch(apiUrl(`/api/goal-sheets/${sheetId}`), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

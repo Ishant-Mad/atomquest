@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress"
 import { toast } from "sonner"
 import { ChevronLeft, AlertTriangle, Clock, Shield, Users, ArrowRight, CheckCircle2, XCircle } from "lucide-react"
 import Link from "next/link"
+import { apiUrl } from "@/lib/api"
 
 const SEVERITY_CONFIG: Record<string, { label: string; bg: string; color: string; icon: any }> = {
   HIGH: { label: 'High', bg: 'bg-red-50', color: 'text-red-700', icon: XCircle },
@@ -34,7 +35,7 @@ export default function AdminEscalationsPage() {
     if (!isAuthenticated) { router.push("/"); return }
     if (role !== "ADMIN") { router.push("/dashboard"); return }
 
-    fetch("http://localhost:5001/api/admin/escalations")
+    fetch(apiUrl("/api/admin/escalations"))
       .then(r => r.json())
       .then(d => { setData(d); setIsLoading(false) })
       .catch(() => { toast.error("Failed to load escalation data"); setIsLoading(false) })

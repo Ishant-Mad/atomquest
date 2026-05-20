@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import { ChevronLeft, Users, Plus, Edit2, Trash2, Check, X, UserCheck, UserX } from "lucide-react"
+import { apiUrl } from "@/lib/api"
 
 export default function AdminUsersPage() {
   const { user, isAuthenticated } = useAuth()
@@ -23,7 +24,7 @@ export default function AdminUsersPage() {
 
   const fetchUsers = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:5001/api/admin/users")
+      const res = await fetch(apiUrl("/api/admin/users"))
       if (!res.ok) throw new Error()
       setUsers(await res.json())
     } catch {
@@ -45,7 +46,7 @@ export default function AdminUsersPage() {
       return
     }
     try {
-      const res = await fetch("http://localhost:5001/api/admin/users", {
+      const res = await fetch(apiUrl("/api/admin/users"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...newUser, managerId: newUser.managerId || null })
@@ -62,7 +63,7 @@ export default function AdminUsersPage() {
 
   const handleSaveEdit = async (id: string) => {
     try {
-      const res = await fetch(`http://localhost:5001/api/admin/users/${id}`, {
+      const res = await fetch(apiUrl(`/api/admin/users/${id}`), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editData)
@@ -79,7 +80,7 @@ export default function AdminUsersPage() {
   const handleDeactivate = async (id: string) => {
     if (!confirm("Deactivate this user? Their goal sheets will be preserved.")) return
     try {
-      const res = await fetch(`http://localhost:5001/api/admin/users/${id}`, { method: "DELETE" })
+      const res = await fetch(apiUrl(`/api/admin/users/${id}`), { method: "DELETE" })
       if (!res.ok) throw new Error()
       toast.success("User deactivated")
       fetchUsers()

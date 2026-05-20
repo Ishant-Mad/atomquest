@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { toast } from "sonner"
 import { CheckCircle2, XCircle, Clock, CheckCircle, Edit2, X, Save } from "lucide-react"
 import Link from "next/link"
+import { apiUrl } from "@/lib/api"
 
 export default function ManagerApprovalsPage() {
   const { user, isAuthenticated } = useAuth()
@@ -26,7 +27,7 @@ export default function ManagerApprovalsPage() {
 
     const fetchPending = async () => {
       try {
-        const res = await fetch(`http://localhost:5001/api/goal-sheets/pending/${user?.id}`)
+        const res = await fetch(apiUrl(`/api/goal-sheets/pending/${user?.id}`))
         if (!res.ok) throw new Error("Failed to load")
         const data = await res.json()
         setPendingSheets(data)
@@ -94,7 +95,7 @@ export default function ManagerApprovalsPage() {
       })
 
       if (hasEdits) {
-        const editRes = await fetch(`http://localhost:5001/api/goal-sheets/${sheet.id}`, {
+        const editRes = await fetch(apiUrl(`/api/goal-sheets/${sheet.id}`), {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -116,7 +117,7 @@ export default function ManagerApprovalsPage() {
       }
 
       // Then approve
-      const approveRes = await fetch(`http://localhost:5001/api/goal-sheets/${sheet.id}/approve`, {
+      const approveRes = await fetch(apiUrl(`/api/goal-sheets/${sheet.id}/approve`), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ managerId: user?.id })
@@ -136,7 +137,7 @@ export default function ManagerApprovalsPage() {
 
   const handleApprove = async (sheetId: string) => {
     try {
-      const res = await fetch(`http://localhost:5001/api/goal-sheets/${sheetId}/approve`, {
+      const res = await fetch(apiUrl(`/api/goal-sheets/${sheetId}/approve`), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ managerId: user?.id })
@@ -151,7 +152,7 @@ export default function ManagerApprovalsPage() {
 
   const handleReturn = async (sheetId: string) => {
     try {
-      const res = await fetch(`http://localhost:5001/api/goal-sheets/${sheetId}/return`, {
+      const res = await fetch(apiUrl(`/api/goal-sheets/${sheetId}/return`), {
         method: "POST"
       })
       if (!res.ok) throw new Error("Failed to return")

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { toast } from "sonner"
 import { ChevronLeft, Unlock, CheckCircle2, Clock, AlertCircle, FileText, Layers, Filter } from "lucide-react"
+import { apiUrl } from "@/lib/api"
 
 const STATUS_OPTIONS = ["ALL", "DRAFT", "PENDING_APPROVAL", "APPROVED", "RETURNED"]
 
@@ -35,7 +36,7 @@ export default function AdminGoalSheetsPage() {
     try {
       const params = new URLSearchParams()
       if (statusFilter !== "ALL") params.set("status", statusFilter)
-      const res = await fetch(`http://localhost:5001/api/admin/goal-sheets?${params.toString()}`)
+      const res = await fetch(apiUrl(`/api/admin/goal-sheets?${params.toString()}`))
       if (!res.ok) throw new Error()
       setSheets(await res.json())
     } catch {
@@ -58,7 +59,7 @@ export default function AdminGoalSheetsPage() {
     }
     setIsUnlocking(true)
     try {
-      const res = await fetch(`http://localhost:5001/api/admin/goal-sheets/${sheetId}/unlock`, {
+      const res = await fetch(apiUrl(`/api/admin/goal-sheets/${sheetId}/unlock`), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ adminId: user?.id, justification })

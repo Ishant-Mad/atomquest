@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress"
 import { toast } from "sonner"
 import { Save, ChevronLeft, BarChart2, TrendingUp } from "lucide-react"
 import Link from "next/link"
+import { apiUrl } from "@/lib/api"
 
 const QUARTER_OPTIONS = ['Q1', 'Q2', 'Q3', 'Q4']
 const STATUS_OPTIONS = ['NOT_STARTED', 'ON_TRACK', 'COMPLETED']
@@ -29,7 +30,7 @@ function AchievementsContent() {
     if (!sheetId || !user?.id) return
     setIsLoading(true)
     try {
-      const res = await fetch(`http://localhost:5001/api/goal-sheets/employee/${user.id}`)
+      const res = await fetch(apiUrl(`/api/goal-sheets/employee/${user.id}`))
       if (!res.ok) throw new Error()
       const sheets = await res.json()
       const found = sheets.find((s: any) => s.id === sheetId)
@@ -67,7 +68,7 @@ function AchievementsContent() {
       if (goal.isShared && !goal.isPrimaryOwner) continue
 
       try {
-        const res = await fetch("http://localhost:5001/api/achievements", {
+        const res = await fetch(apiUrl("/api/achievements"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import { Users, Save, Target, ChevronLeft } from "lucide-react"
 import Link from "next/link"
+import { apiUrl } from "@/lib/api"
 
 const UOM_OPTIONS = ["NUMERIC", "PERCENTAGE", "TIMELINE", "ZERO_BASED"]
 
@@ -40,14 +41,14 @@ export default function CreateSharedGoalPage() {
     }
 
     // Fetch team (mocked here, ideally `/api/users/team/${user.id}`)
-    fetch(`http://localhost:5001/api/users`)
+    fetch(apiUrl(`/api/users`))
       .then(res => res.json())
       .then(data => {
         setTeam(data.filter((u: any) => u.id !== user?.id && u.roles !== "ADMIN"))
       })
       .catch(err => console.error(err))
 
-    fetch("http://localhost:5001/api/thrust-areas")
+    fetch(apiUrl("/api/thrust-areas"))
       .then(res => res.json())
       .then(data => setThrustAreas(data))
       .catch(err => console.error(err))
@@ -74,7 +75,7 @@ export default function CreateSharedGoalPage() {
 
     setIsSubmitting(true)
     try {
-      const res = await fetch("http://localhost:5001/api/goal-sheets/shared", {
+      const res = await fetch(apiUrl("/api/goal-sheets/shared"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

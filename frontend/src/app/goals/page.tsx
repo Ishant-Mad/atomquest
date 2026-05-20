@@ -14,6 +14,7 @@ import {
   Send, FileText, RefreshCw, ChevronRight, Edit2, BarChart2,
   TrendingUp, Award, Layers
 } from "lucide-react"
+import { apiUrl } from "@/lib/api"
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: any }> = {
   DRAFT:            { label: 'Draft',            color: 'text-muted-foreground',  bg: 'bg-secondary',  icon: FileText },
@@ -34,7 +35,7 @@ export default function MyGoalsPage() {
     if (!user?.id) return
     setIsLoading(true)
     try {
-      const res = await fetch(`http://localhost:5001/api/goal-sheets/employee/${user.id}`)
+      const res = await fetch(apiUrl(`/api/goal-sheets/employee/${user.id}`))
       if (!res.ok) throw new Error("Failed to load")
       const data = await res.json()
       setSheets(data)
@@ -53,7 +54,7 @@ export default function MyGoalsPage() {
   const handleSubmit = async (sheetId: string) => {
     setSubmitting(sheetId)
     try {
-      const res = await fetch(`http://localhost:5001/api/goal-sheets/${sheetId}/submit`, { method: "POST" })
+      const res = await fetch(apiUrl(`/api/goal-sheets/${sheetId}/submit`), { method: "POST" })
       if (!res.ok) throw new Error((await res.json()).error?.message)
       toast.success("Goal sheet submitted for approval!")
       fetchSheets()

@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { toast } from "sonner"
 import { ChevronLeft, Download, Filter, BarChart2 } from "lucide-react"
+import { apiUrl } from "@/lib/api"
 
 export default function AdminReportsPage() {
   const { user, isAuthenticated } = useAuth()
@@ -26,8 +27,8 @@ export default function AdminReportsPage() {
     if (role !== "ADMIN" && role !== "MANAGER") { router.push("/dashboard"); return }
     // Load cycles and users for filters
     Promise.all([
-      fetch("http://localhost:5001/api/admin/cycles").then(r => r.json()),
-      fetch("http://localhost:5001/api/users").then(r => r.json()),
+      fetch(apiUrl("/api/admin/cycles")).then(r => r.json()),
+      fetch(apiUrl("/api/users")).then(r => r.json()),
     ]).then(([c, u]) => { setCycles(c); setUsers(u) }).catch(console.error)
   }, [isAuthenticated, role, router])
 
@@ -39,7 +40,7 @@ export default function AdminReportsPage() {
       if (filters.cycleId) params.set("cycleId", filters.cycleId)
       if (filters.employeeId) params.set("employeeId", filters.employeeId)
       if (filters.thrustArea) params.set("thrustArea", filters.thrustArea)
-      const res = await fetch(`http://localhost:5001/api/admin/reports/achievements?${params.toString()}`)
+      const res = await fetch(apiUrl(`/api/admin/reports/achievements?${params.toString()}`))
       if (!res.ok) throw new Error()
       setReportData(await res.json())
     } catch {

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import { ChevronLeft, FileText, Download, Filter } from "lucide-react"
+import { apiUrl } from "@/lib/api"
 
 export default function AdminAuditLogsPage() {
   const { user, isAuthenticated } = useAuth()
@@ -25,7 +26,7 @@ export default function AdminAuditLogsPage() {
       if (filters.field) params.set("field", filters.field)
       if (filters.from) params.set("from", filters.from)
       if (filters.to) params.set("to", filters.to)
-      const res = await fetch(`http://localhost:5001/api/admin/audit-logs?${params.toString()}`)
+      const res = await fetch(apiUrl(`/api/admin/audit-logs?${params.toString()}`))
       if (!res.ok) throw new Error()
       setLogs(await res.json())
     } catch {
